@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors
-LIBFLAGS = -lMLV -lncurses
+LIBS = -lMLV -lncurses
 
 SRC_DIR = src/
 INC_DIR = include/
