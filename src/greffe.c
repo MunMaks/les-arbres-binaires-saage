@@ -1,4 +1,5 @@
-/* Greffe */
+#include "../include/greffe.h"
+
 
 int copie(Arbre *dest, Arbre source)
 {
