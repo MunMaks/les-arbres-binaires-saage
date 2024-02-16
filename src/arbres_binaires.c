@@ -34,6 +34,7 @@ int creer_arbre(FILE *fptr, Arbre *root)
     if ((fscanf(fptr, "%d ", &val)) <= 0) {
         return 0;
     }
+
     if (val == 0) { return 1; }
 
     else if (fscanf(fptr, "%s", buffer) <= 0 ) {
@@ -114,11 +115,11 @@ Arbre cree_A_1(void)
     
     Arbre arbre_droit = NULL, arbre_gauche = NULL;
     
-    if(! (arbre = alloue_noeud("arbre\n")) ) { return NULL; }
+    if (! (arbre = alloue_noeud("arbre\n")) ) { return NULL; }
 
-    if(! (arbre_gauche = alloue_noeud("binaire\n")) ) { liberer_arbre(&arbre); return NULL; }
+    if (! (arbre_gauche = alloue_noeud("binaire\n")) ) { liberer_arbre(&arbre); return NULL; }
 
-    if(! (arbre_droit = alloue_noeud("ternaire\n")) ) { liberer_arbre(&arbre); return NULL; }
+    if (! (arbre_droit = alloue_noeud("ternaire\n")) ) { liberer_arbre(&arbre); return NULL; }
 
 
     arbre->left = arbre_gauche;
