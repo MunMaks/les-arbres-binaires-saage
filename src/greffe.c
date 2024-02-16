@@ -2,22 +2,29 @@
 
 int copie(Arbre *dest, Arbre source)
 {
-    if (!source) { *dest = NULL; return 0; }  /* Source est vide */
+    if (!source) { *dest = NULL; return 1; }  /* Source est vide */
 
-    *dest = malloc(sizeof *source);
+    *dest = alloue_noeud(source->val);
 
     if (*dest) { return 0; }  /* allocation mal passe */
       
-    if (source->left) {
-        *(dest)->left = source->left;
-        return copie(&(*dest)->left, source->left); 
+    if (!copie(&((*dest)->left), source->left)) {
+        liberer_arbre(dest); /* en cas d'échec */
+        return 0;
     }
 
-    if (source->right) {
-        *(dest)->right = source->right;
-        return copie(&(*dest)->right, source->right); 
+    // Copie récursive du sous-arbre droit
+    if (!copie(&((*dest)->right), source->right)) {
+        liberer_arbre(dest); /* en cas d'échec */
+        return 0;
     }
 
     return 1;
+}
+
+
+int expansion(Arbre * A, Arbre B)
+{
+    /* TO DO */
 }
 
