@@ -24,6 +24,7 @@ Noeud *alloue_noeud(char *s)
 }
 
 
+
 void liberer_arbre(Arbre *arbre)
 {
     if (*arbre){
@@ -33,6 +34,7 @@ void liberer_arbre(Arbre *arbre)
         *arbre = NULL;
     }
 }
+
 
 
 /* TO DO */
@@ -45,14 +47,14 @@ Arbre cree_A_1(void)
 /* TO DO */
 Arbre cree_A_2(void)
 {
-  
+
 }
 
 
 /* TO DO */
 Arbre cree_A_3(void)
 {
-  
+
 }
 
 

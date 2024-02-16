@@ -21,9 +21,7 @@ $(EXE): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 
-$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/fichier.h
-
-$(OBJ_DIR)/fichier.o: $(SRC_DIR)/fichier.c $(INC_DIR)/fichier.h $(INC_DIR)/saage.h
+$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/saage.h
 
 $(OBJ_DIR)/saage.o: $(SRC_DIR)/saage.c $(INC_DIR)/saage.h $(INC_DIR)/greffe.h
 
