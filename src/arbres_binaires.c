@@ -9,18 +9,16 @@ int len(char *mot)
 }
 
 
-Arbre alloue(char *chaine)
+Arbre alloue(const char *chaine)
 {
     Arbre noeud = NULL;
     if (!(noeud = malloc(sizeof *noeud) )) { return NULL; }
 
-    noeud->nom = malloc(len(chaine) + 1);
+    noeud->nom = strdup(chaine);
     if (!noeud->nom) {
         free(noeud);
         return NULL;
     }
-
-    strcpy(noeud->nom, chaine);
 
     noeud->right = noeud->left = NULL;
     return noeud;
@@ -133,29 +131,26 @@ int SAAGE_creer_arbre(FILE *fptr, Arbre *arbre) {
     }
 
     // Extract value from the line
-    if (sscanf(line, "Valeur : %[^\n]", buffer) <= 0) {
+    if (sscanf(line, "Valeur : %[^\n]", buffer) == EOF) {
         return 0; // Failed to extract value
     }
 
     if (strcmp(buffer, "NULL") == 0) {
-        fprintf(stderr, "inside strcmp\n");
         *arbre = NULL; // Set tree node to NULL
         return 1;
     }
 
-    if (!(*arbre = alloue(buffer) )) {
+    if (!(*arbre = alloue(buffer))) {
         return 0; // Memory allocation failed
     }
 
     // Parse left subtree
     if (fgets(line, sizeof(line), fptr) && strstr(line, "Gauche : ")) {
-        (*arbre)->left = malloc(sizeof *(*arbre)->left);
         return SAAGE_creer_arbre(fptr, &((*arbre)->left));
     }
 
     // Parse right subtree
     if (fgets(line, sizeof(line), fptr) && strstr(line, "Droite : ")) {
-        (*arbre)->right = malloc(sizeof *(*arbre)->right);
         return SAAGE_creer_arbre(fptr, &((*arbre)->right));
     }
 

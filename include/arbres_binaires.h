@@ -1,6 +1,7 @@
 #ifndef __ARBRES_BINAIRES_H__
-
 #define __ARBRES_BINAIRES_H__
+
+#define _POSIX_C_SOURCE 200809L
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +36,7 @@ extern void dessin(FILE *fptr, Arbre arbre);
 
 /* Les fonctions pour les arbres */
 extern int len(char *mot);
-extern Arbre alloue(char *chaine);
+extern Arbre alloue(const char *chaine);
 extern void liberer_arbre(Arbre *arbre);
 extern int hauteur(Arbre arbre);
 
