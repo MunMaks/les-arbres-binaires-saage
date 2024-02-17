@@ -1,47 +1,67 @@
 CC = gcc
 CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors
-LIBS = -lMLV -lncurses -lm
+CLIBS = -lncurses
+OPT = -O3
 
-SRC_DIR = src/
-INC_DIR = include/
-OBJ_DIR = build/
+SRC_DIR = src
+INC_DIR = include
+OBJ_DIR = build
+EXE = algo
 
 
 SRC = $(wildcard $(SRC_DIR)/*.c)
 
 OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
-EXE = algo
+
+INC = -I $(INC_DIR)
 
 
-
-all: $(BIN_DIR)/$(EXE)
+all: $(EXE)
 
 $(EXE): $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(OPT) $(CLIBS)
 
 
-$(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/saage.h
-
-$(OBJ_DIR)/saage.o: $(SRC_DIR)/saage.c $(INC_DIR)/saage.h $(INC_DIR)/greffe.h
-
-$(OBJ_DIR)/greffe.o: $(SRC_DIR)/greffe.c $(INC_DIR)/greffe.h $(INC_DIR)/arbres_binaires.h
-
-$(OBJ_DIR)/arbres_binaires.o: $(SRC_DIR)/arbres_binaires.c $(INC_DIR)/arbres_binaires.h
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(OPT) $(INC) -c -o $@ $<
 
 
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+# $(OBJ_DIR)/main.o: $(SRC_DIR)/main.c $(INC_DIR)/saage.h
+
+# $(OBJ_DIR)/saage.o: $(SRC_DIR)/saage.c $(INC_DIR)/saage.h $(INC_DIR)/greffe.h
+
+# $(OBJ_DIR)/greffe.o: $(SRC_DIR)/greffe.c $(INC_DIR)/greffe.h $(INC_DIR)/arbres_binaires.h
+
+# $(OBJ_DIR)/arbres_binaires.o: $(SRC_DIR)/arbres_binaires.c $(INC_DIR)/arbres_binaires.h
 
 
-%.o: $(SRC_DIR)%.c
-	$(CC) -c $< $(CFLAGS)
+
+
+# %.o: $(SRC_DIR)%.c
+# 	$(CC) $(CFLAGS) -c -o $@ $<
+
+# clean:
+# 	rm -rf $(OBJ_DIR)/
+
+# mrproper: clean
+
+# uninstall: mrproper
+# 	rm $(EXE)
+
+# .PHONY: all clean mrproper install uninstall
+
+.PHONY: all clean mrproper uninstall
+
+all: $(EXE)
 
 clean:
-	rm -rf $(OBJ_DIR)/
+	rm -rf $(OBJ_DIR)
 
 mrproper: clean
-	rm -rf $(BIN_DIR)/
+	rm -f $(EXE)
 
 uninstall: mrproper
-	rm $(EXE)
-
-.PHONY: all clean mrproper install uninstall

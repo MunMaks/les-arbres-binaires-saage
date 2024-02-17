@@ -1,0 +1,9 @@
+Valeur : binaire
+Gauche : 
+    Valeur : lexicographique
+    Gauche : NULL
+    Droite : NULL
+Droite : 
+    Valeur : n-aire
+    Gauche : NULL
+    Droite : NULL

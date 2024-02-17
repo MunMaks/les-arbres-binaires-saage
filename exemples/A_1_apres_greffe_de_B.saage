@@ -1,0 +1,15 @@
+Valeur : arbre
+Gauche : 
+    Valeur : binaire
+    Gauche : 
+        Valeur : lexicographique
+        Gauche : NULL
+        Droite : NULL
+    Droite : 
+        Valeur : n-aire
+        Gauche : NULL
+        Droite : NULL
+Droite : 
+    Valeur : ternaire
+    Gauche : NULL
+    Droite : NULL

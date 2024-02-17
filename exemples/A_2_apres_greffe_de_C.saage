@@ -1,0 +1,69 @@
+Valeur : Anémone
+Gauche : 
+    Valeur : Camomille
+    Gauche : 
+        Valeur : Lilas
+        Gauche : NULL
+        Droite : NULL
+    Droite : 
+        Valeur : Rose
+        Gauche : NULL
+        Droite : NULL
+Droite : 
+    Valeur : Camomille
+    Gauche : 
+        Valeur : Lilas
+        Gauche : 
+            Valeur : Dahlia
+            Gauche : NULL
+            Droite : 
+                Valeur : Camomille
+                Gauche : 
+                    Valeur : Lilas
+                    Gauche : 
+                        Valeur : Iris
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : Jasmin
+                        Gauche : NULL
+                        Droite : NULL
+                Droite : 
+                    Valeur : Rose
+                    Gauche : 
+                        Valeur : Iris
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : Jasmin
+                        Gauche : NULL
+                        Droite : NULL
+        Droite : NULL
+    Droite : 
+        Valeur : Rose
+        Gauche : 
+            Valeur : Dahlia
+            Gauche : NULL
+            Droite : 
+                Valeur : Camomille
+                Gauche : 
+                    Valeur : Lilas
+                    Gauche : 
+                        Valeur : Iris
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : Jasmin
+                        Gauche : NULL
+                        Droite : NULL
+                Droite : 
+                    Valeur : Rose
+                    Gauche : 
+                        Valeur : Iris
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : Jasmin
+                        Gauche : NULL
+                        Droite : NULL
+        Droite : NULL

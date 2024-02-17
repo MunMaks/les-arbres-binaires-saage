@@ -1,0 +1,21 @@
+Valeur : Anémone
+Gauche : 
+    Valeur : Camomille
+    Gauche : NULL
+    Droite : NULL
+Droite : 
+    Valeur : Camomille
+    Gauche : 
+        Valeur : Dahlia
+        Gauche : NULL
+        Droite : 
+            Valeur : Camomille
+            Gauche : 
+                Valeur : Iris
+                Gauche : NULL
+                Droite : NULL
+            Droite : 
+                Valeur : Jasmin
+                Gauche : NULL
+                Droite : NULL
+    Droite : NULL

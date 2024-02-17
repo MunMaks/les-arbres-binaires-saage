@@ -1,0 +1,9 @@
+Valeur : arbre
+Gauche : 
+    Valeur : binaire
+    Gauche : NULL
+    Droite : NULL
+Droite : 
+    Valeur : ternaire
+    Gauche : NULL
+    Droite : NULL

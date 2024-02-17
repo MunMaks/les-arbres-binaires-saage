@@ -1,0 +1,9 @@
+Valeur : Camomille
+Gauche : 
+    Valeur : Lilas
+    Gauche : NULL
+    Droite : NULL
+Droite : 
+    Valeur : Rose
+    Gauche : NULL
+    Droite : NULL
