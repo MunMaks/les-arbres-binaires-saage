@@ -20,7 +20,6 @@
 typedef unsigned int uint;
 
 
-
 typedef struct _noeud {
     char *nom;
     struct _noeud *left, *right;
@@ -119,37 +118,6 @@ char* recherche_substring(const char* fullString, const char* substring)
 
 
 
-/*
-Arbre construire_arbre(FILE *fichier) {
-    char buffer[256];
-    if (fgets(buffer, sizeof(buffer), fichier) == NULL) {
-        return NULL;
-    }
-
-    if (strstr(buffer, "NULL")) {
-        return NULL;
-    }
-
-    char *debutValeur = strchr(buffer, ':');
-    if (!debutValeur) {
-        return NULL;
-    }
-    debutValeur += 2; // Pass the colon ':' and the space
-    char *finValeur = strchr(debutValeur, '\n');
-    if (!finValeur) {
-        return NULL;
-    }
-    *finValeur = '\0'; // Terminate the string
-    Arbre noeud = alloue(debutValeur);
-
-    noeud->left = construire_arbre(fichier);
-    noeud->right = construire_arbre(fichier);
-
-    return noeud;
-}
-
-*/
-
 
 
 Arbre construire_arbre(FILE *fichier) {
@@ -172,9 +140,9 @@ Arbre construire_arbre(FILE *fichier) {
     /* les sous-arbres gauches */
     if ( !fgets(buffer, MAX_SIZE, fichier) ) { return NULL; }
 
-    if ( strstr(buffer, "Gauche :") ) {
+    if ( recherche_substring(buffer, "Gauche :") ) {
 
-        if ( strstr(buffer, "NULL") ) noeud->left = NULL;
+        if ( recherche_substring(buffer, "NULL") ) noeud->left = NULL;
         else noeud->left = construire_arbre(fichier);
     }
 
@@ -182,9 +150,9 @@ Arbre construire_arbre(FILE *fichier) {
     /* les sous-arbres droites */
     if ( !fgets(buffer, MAX_SIZE, fichier) ) { return NULL; }
 
-    if ( strstr(buffer, "Droite :") ) {
+    if ( recherche_substring(buffer, "Droite :") ) {
 
-        if ( strstr(buffer, "NULL") ) noeud->right = NULL;
+        if ( recherche_substring(buffer, "NULL") ) noeud->right = NULL;
         else noeud->right = construire_arbre(fichier);
     }
 
@@ -458,11 +426,11 @@ Arbre test_build(const char *path)
 /* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -ansi -O3 test.c */
 int main(int argc, char *argv[])
 {
-    char *path_un =     ".\\exemples\\A_3.saage";
-    char *path_deux =   ".\\exemples\\D.saage";
-    char *path_create = ".\\exemples\\created.saage";
+    char *path_un =     "exemples/A_3.saage";
+    char *path_deux =   "exemples/D.saage";
+    char *path_create = "exemples/created.saage";
 
-    char *path_greffe = ".\\exemples\\A_3_apres_greffe_de_D.saage";
+    char *path_greffe = "exemples/A_3_apres_greffe_de_D.saage";
 
     Arbre res = faire_greffe(path_un, path_deux);
     Arbre apres_greffe = test_build(path_greffe);
@@ -477,7 +445,7 @@ int main(int argc, char *argv[])
     creer_file_saage(fptr_res, res, count_tab);
     fclose(fptr_res);
     // affiche(res);
-    //affiche(apres_greffe);
+    // affiche(apres_greffe);
     liberer_arbre(&res);
     liberer_arbre(&apres_greffe);
     return 0;

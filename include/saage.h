@@ -5,4 +5,9 @@
 #include "greffe.h"
 
 
+
+extern uint serialise(const char *nom_de_fichier, Arbre A);
+
+
+
 #endif
