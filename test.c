@@ -27,6 +27,32 @@ typedef struct _noeud {
 } Noeud, *Arbre;
 
 
+/* modifier */
+/* permet de gerer toute la memoire allouee */
+
+void detruire_noeud(Arbre noeud)
+{
+    if (noeud) {
+        if (noeud->nom) { free(noeud->nom); }
+        free(noeud);
+    }
+}
+
+
+
+void liberer_arbre(Arbre *arbre)
+{
+    if (!*arbre) { return ; }
+
+    if ((*arbre)->left) { liberer_arbre(&((*arbre)->left)); (*arbre)->left = NULL; }
+
+    if ((*arbre)->right) { liberer_arbre(&((*arbre)->right)); (*arbre)->right = NULL; }
+
+    detruire_noeud(*arbre);
+    *arbre = NULL;
+}
+
+
 int len_string(const char *mot)
 {
     int i = 0;
@@ -102,23 +128,13 @@ char* dupliquer_string(const char *source)
 }
 
 
-/* modifier */
-/* permet de gerer toute la memoire allouee */
-void liberer_arbre(Arbre *arbre)
-{
-    if (!*arbre) { return; }
-    liberer_arbre(&((*arbre)->left));
-    liberer_arbre(&((*arbre)->right));
-    free((*arbre)->nom);    /* la memeoire de char * */
-    free(*arbre);           /* la memeoire de Noeud * */
-}
 
 
 
 Arbre alloue(const char *chaine)
 {
-    Arbre noeud = NULL;
-    if (! (noeud = malloc(sizeof *noeud)) ) return NULL;
+    Arbre noeud = (Noeud *)malloc(sizeof *noeud);
+    if ( !noeud ) return NULL;
 
     noeud->nom = dupliquer_string(chaine);  /* strdup() */
     if ( !noeud->nom ) { free(noeud); return NULL; }  /* pas de memoire... */
@@ -256,38 +272,23 @@ Arbre cree_A_3(void)
 
 
 
-void affiche(Arbre arbre)
+void affiche_arbre(Arbre arbre)
 {
     if (!arbre) return;
     printf("%s \n", arbre->nom);
-    affiche(arbre->left);
-    affiche(arbre->right);
+    affiche_arbre(arbre->left);
+    affiche_arbre(arbre->right);
 }
 
 
 
 
-/*  fonction copie dans *dest l’arbre stocke dans source.
-    1 - succès
-    0 - echec */
-int copie(Arbre *dest, Arbre source)
-{
-    if ( !source ) { *dest = NULL; return 1; }  /* source est vide */
 
-    if ( !(*dest = alloue(source->nom)) ) { return 0; }  /* allocation mal passe */
-
-    /* On va entrer dans ce if, ssi allocation mal passe */
-    if ( !copie( &(*dest)->left, source->left ) || !copie( &(*dest)->right, source->right ) ) {
-
-        return 0;   /* Il faut pas oublier de liberer la memoire si copie renvoie 0 */
-    }
-    return 1;
-}
 
 
 /*  1 si deux chaînes sont identiques
     0 sinon */
-int comparer_chaines(const char *string_un, const char *string_deux) {
+uint comparer_chaines(const char *string_un, const char *string_deux) {
     while (*string_un && *string_deux) {
         if (*string_un != *string_deux) return 0;
         ++string_un;
@@ -303,59 +304,76 @@ void ajout_feuilles(Arbre *arbre, Noeud *left, Noeud *right)
 {
     if (!*arbre) { return; }
 
-    ajout_feuilles(&(*arbre)->left, left, right);
-    ajout_feuilles(&(*arbre)->right, left, right);
+    ajout_feuilles(&((*arbre)->left), left, right);
+    ajout_feuilles(&((*arbre)->right), left, right);
 
-    if ( !(*arbre)->left ) { (*arbre)->left = left; }
-    if ( !(*arbre)->right ) { (*arbre)->right = right; }
+    if ( !((*arbre)->left) ) { (*arbre)->left = left; }
+    if ( !((*arbre)->right) ) { (*arbre)->right = right; }
 }
+
+
+
+/*  fonction copie dans *dest l’arbre stocke dans source.
+    1 - succès
+    0 - echec */
+// int copie(Arbre *dest, Arbre source)
+// {
+//     if ( !source ) { *dest = NULL; return 1; }  /* source est vide */
+
+//     if ( !( (*dest) = alloue(source->nom)) ) { return 0; }  /* allocation mal passe */
+
+//     /* On va entrer dans ce if, ssi allocation mal passe */
+//     if ( !copie( &(*dest)->left, source->left ) || !copie( &(*dest)->right, source->right ) ) {
+
+//         return 0;   /* Il faut pas oublier de liberer la memoire si copie renvoie 0 */
+//     }
+//     return 1;
+// }
+
+Arbre copie(Arbre source) {
+    if (!source) { return NULL; }
+
+    Arbre copied_node = alloue(source->nom);
+    
+    if ( !copied_node ) {
+        fprintf(stderr, "Erreur d'allocation de mémoire pour la copie de l'arbre.\n");
+        return NULL;
+    }
+
+    copied_node->left = copie(source->left);
+    copied_node->right = copie(source->right);
+
+    return copied_node;
+}
+
 
 
 /* modifier */
-int expansion(Arbre *dest, Arbre source)
+uint expansion(Arbre *dest, Arbre source)
 {
     int left = 0, right = 0;
-    if (!dest) { return 1; }
     if (!source || !*dest) return 1;
 
-    left = expansion(&((*dest)->left), source);
-    right = expansion(&((*dest)->right), source);
+    left = ((*dest)->left) ? expansion(&((*dest)->left), source) : 0;
 
-    if ( comparer_chaines((*dest)->nom, source->nom) == 1 ) {
+    right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 0;
 
-        Arbre source_copie = NULL, sous_arbre_gauche = NULL, sous_arbre_droite = NULL;
+    if ( strcmp((*dest)->nom, source->nom) == 0) {    /*comparer_chaines()*/
 
-        /* si n'a pas reussi de copier la greffe de source sur source_copie*/
-        if ( !copie(&source_copie, source) ) {
-            fprintf(stderr, "Pas reussi de copier arbre source");
-            if (source_copie) { liberer_arbre(&source_copie); }
-            return 0;
-        }
-
-        /* si n'a pas reussi de copier des sous arbres de *dest (s'ils existent) */
-        if ( !copie(&sous_arbre_gauche, (*dest)->left) ) {
-            fprintf(stderr, "Pas reussi de copier des sous arbres de *dest");
-            if (source_copie) { liberer_arbre(&source_copie); }
-            if (sous_arbre_gauche) { liberer_arbre(&sous_arbre_gauche); }
-            return 0;
-        }
-
-        /* si n'a pas reussi de copier des sous arbres de *dest (s'ils existent) */
-        if ( !copie(&sous_arbre_droite, (*dest)->right) ) {
-            fprintf(stderr, "Pas reussi de copier des sous arbres de *dest");
-            if (source_copie) { liberer_arbre(&source_copie); }
-            if (sous_arbre_gauche) { liberer_arbre(&sous_arbre_gauche); }
-            if (sous_arbre_droite) { liberer_arbre(&sous_arbre_droite); }
-            return 0;
-        }
+        Arbre source_copie = copie(source);
+        Arbre sous_arbre_gauche = copie((*dest)->left);
+        Arbre sous_arbre_droite = copie((*dest)->right);
 
         /* On effectue l'ajout des sous arbres de *dest a copie de source */
         ajout_feuilles(&source_copie, sous_arbre_gauche, sous_arbre_droite);
+        liberer_arbre(dest);
         *dest = source_copie;
-        return 1;
     }
     return left && right;
 }
+
+
+
 
 
 
@@ -405,7 +423,8 @@ Arbre arbre_de_fichier(const char *path)
     FILE *fptr = fopen(path, "r");
     if (!fptr) {
         fprintf(stderr, "Erreur d'ouverture du fichier.saage: %s\n", strerror(errno));
-        return NULL; }
+        return NULL;
+    }
 
     arbre = construire_arbre(fptr);
     fclose(fptr);
@@ -413,18 +432,15 @@ Arbre arbre_de_fichier(const char *path)
 }
 
 /* modifie */
-Arbre faire_greffe(const char *path_un , const char *path_deux)
+uint faire_greffe(Arbre *dest , Arbre source)
 {
-    Arbre dest = arbre_de_fichier(path_un); 
-    Arbre source = arbre_de_fichier(path_deux);
 
-    if ( expansion(&dest, source) ) {
-        liberer_arbre(&source);
-        return dest;
+    if ( expansion(dest, source) ) {
+        return 1;
     }
 
-    fprintf(stderr, "Expansion a mal passe, la memoire ...\n");
-    return NULL;
+    fprintf(stderr, "expansion a mal passe, la memoire ...\n");
+    return 0;
 }
 
 
@@ -438,7 +454,7 @@ uint creer_file_saage(Arbre arbre, const char *path_create)
 
     fptr_res = fopen(path_create, "w");
     if (!fptr_res) {
-        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create,strerror(errno));
+        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create, strerror(errno));
         return 1;
     }
 
@@ -456,29 +472,36 @@ uint creer_file_saage(Arbre arbre, const char *path_create)
 /* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -ansi -O3 test.c */
 int main(int argc, char *argv[])
 {
-    Arbre res = NULL, apres_greffe;
+    Arbre first = NULL, second = NULL;
+    Arbre res = NULL, apres_greffe = NULL;
     char *path_un =     "exemples/A_3.saage";                       /* source_un */
     char *path_deux =   "exemples/D.saage";                         /* source_deux */
-    char *path_create = "exemples/created.saage";                   /* notre resultat */
     char *path_greffe = "exemples/A_3_apres_greffe_de_D.saage";     /* resultat attendu */
+    char *path_create = "exemples/created.saage";                   /* notre resultat */
 
-    res = faire_greffe(path_un, path_deux);
-    if (!res) { return 1; } /* car greffe a rate */
+    first = arbre_de_fichier(path_un); 
+    second = arbre_de_fichier(path_deux); // arbre_de_fichier(path_deux);
+
+    //printf("greffe passé: %d\n", faire_greffe(&first, second));
+    expansion(&first, second);
+    liberer_arbre(&second);
+
+    // first = arbre_de_fichier(path_deux);
+    // printf("expansion passe : %d\n", expansion(&res, first));
 
     apres_greffe = arbre_de_fichier(path_greffe);
 
-    if (!creer_file_saage(res, path_create)){
+    if (!creer_file_saage(first, path_create)){
         fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
         return 1;
     }
 
-    printf("La meme arbre: %u\n", est_meme_arbre(res, apres_greffe));
 
-    /*
-    affiche(res);
-    affiche(apres_greffe);
-    */
-    liberer_arbre(&res);
-    liberer_arbre(&apres_greffe);
+    printf("La meme arbre 2: %u\n", est_meme_arbre(first, apres_greffe));
+
+    if (first) { liberer_arbre(&first); }
+
+    if (apres_greffe) { liberer_arbre(&apres_greffe); }
+
     return 0;
 }
