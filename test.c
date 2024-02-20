@@ -33,7 +33,7 @@ typedef struct _noeud {
 void detruire_noeud(Arbre noeud)
 {
     if (noeud) {
-        if (noeud->nom) { free(noeud->nom); }
+        if (noeud->nom) { free(noeud->nom); noeud->nom = NULL; }
         free(noeud);
     }
 }
@@ -133,44 +133,17 @@ char* dupliquer_string(const char *source)
 
 Arbre alloue(const char *chaine)
 {
-    Arbre noeud = (Noeud *)malloc(sizeof *noeud);
+    char *nom = strdup(chaine);
+    if (!nom) { return NULL; }
+
+    Arbre noeud = malloc(sizeof *noeud);
     if ( !noeud ) return NULL;
 
-    noeud->nom = dupliquer_string(chaine);  /* strdup() */
-    if ( !noeud->nom ) { free(noeud); return NULL; }  /* pas de memoire... */
+    noeud->nom = nom;  /* strdup() */
 
     noeud->right = noeud->left = NULL;
     return noeud;
 }
-
-
-/* l'Ajout BFS et PAS ABR */
-void BFS_ajoute_arbre(Arbre *arbre, char *chaine)
-{
-    Arbre file[MAX_SIZE];
-    int debut = 0, fin = 0;
-    if (!*arbre) {
-        *arbre = alloue(chaine);
-        return;
-    }
-
-    file[fin++] = *arbre;   /* Ajoute la racine dans la file */
-
-    while (debut != fin) {
-        Arbre noeud = file[debut++];    /* Récupère le premier élément de la file */
-        if (!noeud->left) {
-            noeud->left = alloue(chaine);
-            return;
-        } else if (!noeud->right) {
-            noeud->right = alloue(chaine);
-            return;
-        } else {
-            file[fin++] = noeud->left;
-            file[fin++] = noeud->right;
-        }
-    }
-}
-
 
 
 /********************************************************/
