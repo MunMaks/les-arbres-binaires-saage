@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors
-CLIBS = -lncurses
+CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -ansi
+CLIBS = 
 OPT = -O3
 
 SRC_DIR = src

@@ -4,44 +4,36 @@
 
 int main(int argc, char *argv[])
 {
-    char *path_un =     "exemples/A_3.saage";
-    char *path_deux =   "exemples/D.saage";
-    char *path_create = "exemples/created.saage";
+    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
+    char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
 
-    char *path_greffe = "exemples/A_3_apres_greffe_de_D.saage";
+    /*arbre_init = arbre_de_fichier("exemples/A_3.saage"); */            /* "exemples/A_3.saage" */
+    arbre_init = cree_A_3();
+    path_greffe =   "exemples/D.saage";                        /* source_deux */
+    path_res_att = "exemples/A_3_apres_greffe_de_D.saage";     /* resultat attendu */
 
-    // Arbre res = faire_greffe(path_un, path_deux);
-    Arbre A = arbre_de_fichier(path_un);
-    Arbre B = arbre_de_fichier(path_deux);
-    Arbre res = arbre_de_fichier(path_greffe);
+    path_create = "exemples/created.saage";                   /* notre resultat */
 
-    printf("expansion est: %d\n", expansion(&A, B));
+    greffe = arbre_de_fichier(path_greffe); 
 
-    printf("est meme arbre : %d\n", est_meme_arbre(A, res));
+    printf("greffe passé: %u\n", faire_greffe(&arbre_init, greffe));
 
-    /* SEG FAULT FROM HERE */
-    /* À GERER PLUS TARD */
+    liberer_arbre(&greffe);
 
 
+    res_attendu = arbre_de_fichier(path_res_att);
 
-    // expansion(&res, res2);
-    // FILE *fptr_res = fopen(path_create, "w");
-    // if (!fptr_res) {
-    //     fprintf(stderr, "Erreur d'ouverture du fichier\n");
-    //     return 1;
-    // }
+    if (!creer_fichier_saage(arbre_init, path_create)){
+        fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
+        return 1;
+    }
 
-    // uint count_tab = 0;
-    // creer_file_saage(fptr_res, res, count_tab);
-    // fclose(fptr_res);
-    // affiche(res);
-    // affiche(apres_greffe);
 
-    // valgrind: total heap usage: 207 allocs, 199 frees, 30,738 bytes allocated
+    printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));
 
-    liberer_arbre(&A);
-    liberer_arbre(&B);
-    liberer_arbre(&res);
-    // liberer_arbre(&apres_greffe);
+    /* pour être sur qu'on aura pas de segfault */
+    if (arbre_init) { liberer_arbre(&arbre_init); }
+    if (res_attendu) { liberer_arbre(&res_attendu); }
+
     return 0;
 }

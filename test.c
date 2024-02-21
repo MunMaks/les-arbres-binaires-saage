@@ -30,12 +30,11 @@ typedef struct _noeud {
 /* modifier */
 /* permet de gerer toute la memoire allouee */
 
-void detruire_noeud(Noeud **noeud)
+void detruire_noeud(Noeud *noeud)
 {
-    if (*noeud) {
-        if ((*noeud)->nom) { free((*noeud)->nom); (*noeud)->nom = NULL; }
-        free(*noeud);
-        *noeud = NULL;
+    if (noeud) {
+        if (noeud->nom) { free(noeud->nom); }
+        free(noeud);
     }
 }
 
@@ -44,17 +43,17 @@ void liberer_arbre(Arbre *arbre)
 {
     if (!*arbre) { return ; }
 
-    if ((*arbre)->left) { liberer_arbre(&((*arbre)->left)); (*arbre)->left = NULL; }
+    if ((*arbre)->left) { liberer_arbre(&((*arbre)->left)); }
 
-    if ((*arbre)->right) { liberer_arbre(&((*arbre)->right)); (*arbre)->right = NULL; }
+    if ((*arbre)->right) { liberer_arbre(&((*arbre)->right)); }
 
-    detruire_noeud(arbre);
+    detruire_noeud(*arbre);
 }
 
 
-int len_string(const char *mot)
+uint len_string(const char *mot)
 {
-    int i = 0;
+    uint i = 0;
     while (*(mot + i)) ++i;
     return i; 
 }
@@ -136,7 +135,7 @@ Arbre alloue(const char *chaine)
     Arbre noeud = malloc(sizeof *noeud);
     if ( !noeud ) return NULL;
 
-    noeud->nom = strdup(chaine);  /* strdup() */
+    noeud->nom = dupliquer_string(chaine);  /* strdup() */
     if ( !(noeud->nom) ) { free(noeud); return NULL; }
 
     noeud->left = NULL;
@@ -275,57 +274,38 @@ uint comparer_chaines(const char *string_un, const char *string_deux)
 
 
 
-
-/*  fonction copie dans *dest l’arbre stocke dans source.
-    1 - succès
-    0 - echec */
-// int copie(Arbre *dest, Arbre source)
-// {
-//     if ( !source ) { *dest = NULL; return 1; }  /* source est vide */
-
-//     if ( !( (*dest) = alloue(source->nom)) ) { return 0; }  /* allocation mal passe */
-
-//     /* On va entrer dans ce if, ssi allocation mal passe */
-//     if ( !copie( &(*dest)->left, source->left ) || !copie( &(*dest)->right, source->right ) ) {
-
-//         return 0;   /* Il faut pas oublier de liberer la memoire si copie renvoie 0 */
-//     }
-//     return 1;
-// }
-
-
 Arbre copie(Arbre source)
 {
+    Arbre new_node = NULL;
     if (!source) { return NULL; }
-
-    Arbre copied_node = NULL;
     
-    if ( !(copied_node = alloue(source->nom)) ) {
+    if ( !(new_node = alloue(source->nom)) ) {
         fprintf(stderr, "Erreur d'allocation de mémoire pour la copie de l'arbre.\n");
         return NULL;
     }
 
-    copied_node->left = copie(source->left);
-    copied_node->right = copie(source->right);
+    new_node->left = copie(source->left);
+    new_node->right = copie(source->right);
 
-    return copied_node;
+    return new_node;
 }
 
 
 
 /* modifier */
 /* Cette fonction ajoute left et right pour chaque feuilles de l'arbre */
-void ajout_feuilles(Arbre *arbre, Noeud *left, Noeud *right)
+void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 {
     Arbre left_copie = NULL, right_copie = NULL;
 
     if (!*arbre) { return; }
 
-    if ((*arbre)->left) { ajout_feuilles(&((*arbre)->left), left, right); }
+    if ((*arbre)->left) { ajoute_sous_arbres(&((*arbre)->left), left, right); }     /* si sous arbre gauche existe */
 
-    if ((*arbre)->right) { ajout_feuilles(&((*arbre)->right), left, right); }
+    if ((*arbre)->right) { ajoute_sous_arbres(&((*arbre)->right), left, right); }   /* si sous arbre droite existe */
 
 
+    /* inserer les sous arbres */
     if ( !((*arbre)->left) ) { 
         left_copie = copie(left);
         (*arbre)->left = left_copie;
@@ -344,29 +324,27 @@ void ajout_feuilles(Arbre *arbre, Noeud *left, Noeud *right)
 /* modifier */
 uint expansion(Arbre *dest, Arbre source)
 {
-    // int left = 0, right = 0;
+    uint left = 0, right = 0;
     if (!source || !*dest) return 0;
 
-    int left = ((*dest)->left) ? expansion(&((*dest)->left), source) : 1;
+    left = ((*dest)->left) ? expansion(&((*dest)->left), source) : 1;
 
-    int right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 1;
+    right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 1;
 
-    if ( strcmp((*dest)->nom, source->nom) == 0) {    /*comparer_chaines()*/
+    if ( comparer_chaines((*dest)->nom, source->nom) ) {    /*comparer_chaines()*/
 
         Arbre source_copie = copie(source);
-        Arbre sous_arbre_gauche = copie((*dest)->left);
-        Arbre sous_arbre_droite = copie((*dest)->right);
 
         /* On effectue l'ajout des sous arbres de *dest a copie de source */
         if (!source_copie) {
             fprintf(stderr, "On n'a pas droit d'ajouter, pas assez de memoire\n");
             return 0;
         }
-        ajout_feuilles(&source_copie, sous_arbre_gauche, sous_arbre_droite);
-        if (sous_arbre_gauche) { liberer_arbre(&sous_arbre_gauche); }
-        if (sous_arbre_droite) { liberer_arbre(&sous_arbre_droite); }
+        /* l'ajout des sous arbres de la racine */
+        ajoute_sous_arbres(&source_copie, (*dest)->left, (*dest)->right);
 
-        liberer_arbre(dest);    /* liberer toute la memoire alloue par dest*/
+        liberer_arbre(dest);    /* liberer toute la memoire alloue par dest */
+
         *dest = source_copie;
     }
     return left && right;
@@ -457,19 +435,19 @@ uint creer_fichier_saage(Arbre arbre, const char *path_create)
 
 
 
-/* gcc -o main -std=c17 -pedantic -Wfatal-errors -O3 test.c */
 /* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -ansi -O3 test.c */
 /* valgrind --leak-check=full --show-leak-kinds=all ./main*/
 int main(int argc, char *argv[])
 {
-    Arbre arbre_init = NULL, greffe = NULL;
-    Arbre res_attendu = NULL;
+    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
+    char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
 
-    arbre_init = arbre_de_fichier("exemples/A_3.saage");             /* "exemples/A_3.saage" */
-    char *path_greffe =   "exemples/D.saage";                        /* source_deux */
-    char *path_res_att = "exemples/A_3_apres_greffe_de_D.saage";     /* resultat attendu */
+    /*arbre_init = arbre_de_fichier("exemples/A_3.saage"); */            /* "exemples/A_3.saage" */
+    arbre_init = cree_A_3();
+    path_greffe =   "exemples/D.saage";                        /* source_deux */
+    path_res_att = "exemples/A_3_apres_greffe_de_D.saage";     /* resultat attendu */
 
-    char *path_create = "exemples/created.saage";                   /* notre resultat */
+    path_create = "exemples/created.saage";                   /* notre resultat */
 
     greffe = arbre_de_fichier(path_greffe); 
 
