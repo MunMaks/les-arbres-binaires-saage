@@ -437,17 +437,48 @@ uint creer_fichier_saage(Arbre arbre, const char *path_create)
 
 /* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -ansi -O3 test.c */
 /* valgrind --leak-check=full --show-leak-kinds=all ./main*/
+
+/* 
+• saage -E fichier.saage crée une sauvegarde dans le fichier .saage
+d’un arbre saisi par l’utilisateur au clavier. (TO DO)
+• saage -G s.saage g.saage crée l’arbre où le greffon g.saage
+est appliqué à l’arbre source stocké dans s.saage. (TO DO)
+Le résultat de la greffe sera fournis sur la sortie standard au format .saage 
+
+
+Remarques:
+1. Aucun autre texte que l’arbre obtenu et affiché au format .saage ne devra être ajouté sur la sortie
+standard. (TO DO)
+2. Toute la mémoire allouée devra être libérée à l’issue du processus. (fait)
+
+*/
+
+
 int main(int argc, char *argv[])
 {
+    if (argc < 2) {
+        printf("Pas assez d'arguments\n");
+        return 0;
+    }
+
+    while (*++argv) {
+        /* saage -E fichier.saage */
+        printf("%s\n", *argv);
+
+        /* saage -G s.saage g.saage */
+    }
+
+
+
+    /*
     Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
     char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
 
-    /*arbre_init = arbre_de_fichier("exemples/A_3.saage"); */            /* "exemples/A_3.saage" */
     arbre_init = cree_A_3();
-    path_greffe =   "exemples/D.saage";                        /* source_deux */
-    path_res_att = "exemples/A_3_apres_greffe_de_D.saage";     /* resultat attendu */
+    path_greffe =   "exemples/D.saage";
+    path_res_att = "exemples/A_3_apres_greffe_de_D.saage";
 
-    path_create = "exemples/created.saage";                   /* notre resultat */
+    path_create = "exemples/created.saage";
 
     greffe = arbre_de_fichier(path_greffe); 
 
@@ -463,12 +494,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-
     printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));
 
-    /* pour être sur qu'on aura pas de segfault */
+
     if (arbre_init) { liberer_arbre(&arbre_init); }
     if (res_attendu) { liberer_arbre(&res_attendu); }
+    */    /* pour être sur qu'on aura pas de segfault */
 
     return 0;
 }
