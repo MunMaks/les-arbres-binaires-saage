@@ -517,8 +517,8 @@ int serialise(char *nom_de_fichier, Arbre arbre)
 */
 
 
-
-/* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -ansi -O3 test.c */
+/*-Wextra -finline-functions -funroll-loops*/
+/* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -Werror -finline-functions -funroll-loops -ansi -O3 test.c */
 /* valgrind --leak-check=full --show-leak-kinds=all ./main*/
 
 /* 
@@ -537,6 +537,60 @@ standard. (TO DO)
 */
 
 
+void greffe_dun_arbre(uint numero)
+{
+    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
+    char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
+
+    switch (numero) {
+        case 1:
+            arbre_init = cree_A_1();
+            path_greffe = "exemples/B.saage";
+            path_res_att = "exemples/A_1_apres_greffe_de_B.saage";
+
+            path_create = "exemples/created.saage";
+            greffe = arbre_de_fichier(path_greffe); 
+            res_attendu = arbre_de_fichier(path_res_att);
+            break;
+
+        case 2:
+            arbre_init = cree_A_2();
+            path_greffe = "exemples/C.saage";
+            path_res_att = "exemples/A_2_apres_greffe_de_C.saage";
+
+            path_create = "exemples/created.saage";
+            greffe = arbre_de_fichier(path_greffe); 
+            res_attendu = arbre_de_fichier(path_res_att);
+            break;
+
+        case 3:
+            arbre_init = cree_A_3();
+            path_greffe = "exemples/D.saage";
+            path_res_att = "exemples/A_3_apres_greffe_de_D.saage";
+
+            path_create = "exemples/created.saage";
+            greffe = arbre_de_fichier(path_greffe); 
+            res_attendu = arbre_de_fichier(path_res_att);
+            break;
+
+        default:
+            return;
+    }
+    if ( !expansion(&arbre_init, greffe) )
+        fprintf(stderr, "Expansion a rate \n");
+
+    if ( !creer_fichier_saage(arbre_init, path_create) )
+        fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
+
+    /* printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu)); */
+    if (greffe) { liberer_arbre(&greffe); }
+    if (arbre_init) { liberer_arbre(&arbre_init); }
+    if (res_attendu) { liberer_arbre(&res_attendu); }
+}
+
+
+
+
 int main(int argc, char *argv[])
 {
     /*
@@ -553,31 +607,8 @@ int main(int argc, char *argv[])
     }
     */
 
+    greffe_dun_arbre(1);
 
-    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
-    char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
-
-    arbre_init = cree_A_3();
-    path_greffe =   "exemples/D.saage";
-    path_res_att = "exemples/A_3_apres_greffe_de_D.saage";
-
-    path_create = "exemples/created.saage";
-
-    greffe = arbre_de_fichier(path_greffe); 
-
-    printf("greffe passé: %d\n", expansion(&arbre_init, greffe));
-
-    liberer_arbre(&greffe);
-
-
-    res_attendu = arbre_de_fichier(path_res_att);
-
-    if (!creer_fichier_saage(arbre_init, path_create)){
-        fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
-        return 1;
-    }
-
-    printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));
 
     /*
     FILE *fptr = NULL;
@@ -594,9 +625,6 @@ int main(int argc, char *argv[])
     system("evince visualise.pdf &");
     */
 
-    if (arbre_init) { liberer_arbre(&arbre_init); }
-    if (res_attendu) { liberer_arbre(&res_attendu); }
-    /* pour être sur qu'on aura pas de segfault */
 
     return 0;
 }
