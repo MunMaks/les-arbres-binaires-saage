@@ -72,6 +72,22 @@ void dessine( FILE *fptr , Arbre arbre) {
 
 
 
+void visualisation_dot(Arbre arbre_init)
+{
+    FILE *fptr = NULL;
+    fptr = fopen("exemples/visualise.dot", "w");
+    if (!fptr) {
+        printf("Erreur à l'ouverture du fichier visualise.dot"); return;
+    } else { 
+        dessine(fptr, arbre_init);
+    }
+
+    fclose(fptr);
+    system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
+    system("evince exemples/visualise.pdf &");
+}
+
+
 
 
 
@@ -145,6 +161,18 @@ char* recherche_substring(const char* fullString, const char* substring)
 }
 
 
+/*  1 si deux chaînes sont identiques
+    0 sinon */
+uint comparer_chaines(const char *string_un, const char *string_deux)
+{
+    while (*string_un && *string_deux) {
+        if (*string_un != *string_deux) return 0;
+        ++string_un;
+        ++string_deux;
+    }
+    return (!*string_un && !*string_deux) ? (1) : (0);
+}
+
 
 int hauteur(const Arbre arbre)
 {
@@ -158,7 +186,7 @@ int hauteur(const Arbre arbre)
 char* dupliquer_string(const char *source)
 {
     char *destination = NULL, *temp_dest = NULL;
-    const char *temp_src = NULL;
+    const char *temp_source = NULL;
 
     if ( !source ) return NULL;     /* source est vide */
 
@@ -166,9 +194,9 @@ char* dupliquer_string(const char *source)
     if ( !(destination = malloc((len_string(source) + 1) * sizeof *destination)) ) return NULL;
 
     temp_dest = destination;
-    temp_src = source;
+    temp_source = source;
 
-    while (*temp_src) { *temp_dest++ = *temp_src++; }
+    while (*temp_source) { *temp_dest++ = *temp_source++; }
 
     *temp_dest = '\0';
 
@@ -316,23 +344,6 @@ void affiche_arbre(Arbre arbre)
 }
 
 
-
-
-
-/*  1 si deux chaînes sont identiques
-    0 sinon */
-uint comparer_chaines(const char *string_un, const char *string_deux)
-{
-    while (*string_un && *string_deux) {
-        if (*string_un != *string_deux) return 0;
-        ++string_un;
-        ++string_deux;
-    }
-    return (!*string_un && !*string_deux) ? (1) : (0);
-}
-
-
-
 Arbre copie(Arbre source)
 {
     Arbre new_node = NULL;
@@ -413,7 +424,7 @@ uint expansion(Arbre *dest, Arbre source)
 
     right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 1;
 
-    if ( comparer_chaines((*dest)->nom, source->nom) ) {    /*comparer_chaines()*/
+    if ( comparer_chaines((*dest)->nom, source->nom) ) {
 
         Arbre source_copie = copie(source);
 
@@ -422,10 +433,10 @@ uint expansion(Arbre *dest, Arbre source)
             fprintf(stderr, "On n'a pas droit d'ajouter, pas assez de memoire\n");
             return 0;
         }
-        /* l'ajout des sous arbres de la racine */
+        /* l'ajout des sous arbres de la racine a la copie de source */
         ajoute_sous_arbres(&source_copie, (*dest)->left, (*dest)->right);
 
-        liberer_arbre(dest);    /* liberer toute la memoire alloue par dest */
+        liberer_arbre(dest);    /* liberer toute la memoire de *dest car on va la remplacer */
 
         *dest = source_copie;
     }
@@ -478,7 +489,6 @@ void write_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 
 
 
-
 /* cree */
 uint creer_fichier_saage(Arbre arbre, const char *path_create)
 {
@@ -528,33 +538,7 @@ d’un arbre saisi par l’utilisateur au clavier. (TO DO)
 est appliqué à l’arbre source stocké dans s.saage. (TO DO)
 Le résultat de la greffe sera fournis sur la sortie standard au format .saage 
 
-
-Remarques:
-1. Aucun autre texte que l’arbre obtenu et affiché au format .saage ne devra être ajouté sur la sortie
-standard. (TO DO)
-2. Toute la mémoire allouée devra être libérée à l’issue du processus. (fait)
-
 */
-
-
-
-
-
-
-void visualisation_dot(Arbre arbre_init)
-{
-    FILE *fptr = NULL;
-    fptr = fopen("exemples/visualise.dot", "w");
-    if (!fptr) {
-        printf("Erreur à l'ouverture du fichier visualise.dot"); return;
-    } else { 
-        dessine(fptr, arbre_init);
-    }
-
-    fclose(fptr);
-    system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
-    system("evince exemples/visualise.pdf &");
-}
 
 
 
@@ -631,11 +615,108 @@ void greffe_dun_arbre(uint numero)
 
 
 
-
+/*
 int main(int argc, char *argv[])
 {
-    
+
     greffe_dun_arbre(4);
 
     return 0;
 }
+*/
+
+
+
+/* cette fonction copie source dans dest */
+void copie_chaine(char* dest, const char* source)
+{
+    while ((*dest++ = *source++)) { ; /* boucle vide */ } 
+}
+
+
+/* cette fonction concatene destination et source */
+void concatenantion(char* dest, char* source)
+{
+    while (*dest) { dest++; }
+
+    while ((*dest++ = *source++)) { ; /* boucle vide */ }
+}
+
+
+/* valgrind ./main -G hard.saage greffe_hard.saage */
+
+
+uint main_option_G(int argc, char *argv[])
+{
+    FILE *fptr_create = NULL;
+    Arbre arbre_init = NULL, greffe = NULL;
+    char *path_create = NULL;
+    char path_init[MAX_SIZE];
+    char path_greffe[MAX_SIZE];
+    char ch;
+
+
+    copie_chaine(path_init, "exemples/");
+    concatenantion(path_init, argv[2]);
+    
+    copie_chaine(path_greffe, "exemples/");
+    concatenantion(path_greffe, argv[3]);
+
+
+    arbre_init = arbre_de_fichier(path_init); 
+    if (!arbre_init) { return 0; }
+
+    greffe = arbre_de_fichier(path_greffe);
+    if (!greffe) { liberer_arbre(&arbre_init); return 0; }
+
+
+    if ( !expansion(&arbre_init, greffe) ) {
+        if (arbre_init) { liberer_arbre(&arbre_init); }
+        if (arbre_init) { liberer_arbre(&greffe); }
+        return 0;
+    }
+    liberer_arbre(&greffe);
+
+
+    path_create = "exemples/new_fichier.saage";
+    if (!creer_fichier_saage(arbre_init, path_create)) {
+        if (arbre_init) { liberer_arbre(&arbre_init); }
+        return 0;
+    }
+
+    fptr_create = fopen(path_create, "r");
+    if (!fptr_create) { return 0; }
+
+    while ((ch = fgetc(fptr_create)) != EOF) { putchar(ch); }
+
+    fclose(fptr_create);
+
+    remove(path_create);
+
+    /*if (res_attendu) { liberer_arbre(&res_attendu); } */
+    if (arbre_init) { liberer_arbre(&arbre_init); }
+    return 1;
+}
+
+
+
+int main(int argc, char *argv[])
+{
+
+    /*char* path_res_att = "exemples/A_3_apres_greffe_de_D.saage";*/
+    /*
+    if (argc != 4) {
+        fprintf(stderr, "Usage: %s -G s.saage g.saage\n", argv[0]);
+        return 1;
+    }
+    main_option_G(argc, argv);
+    */
+
+    greffe_dun_arbre(5);
+
+    /*res_attendu = arbre_de_fichier(path_res_att);
+    printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));*/
+    return 0;
+}
+
+
