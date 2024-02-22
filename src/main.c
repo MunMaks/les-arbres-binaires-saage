@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     greffe = arbre_de_fichier(path_greffe); 
 
-    printf("greffe passé: %u\n", faire_greffe(&arbre_init, greffe));
+    printf("greffe passé: %u\n", expansion(&arbre_init, greffe));
 
     liberer_arbre(&greffe);
 

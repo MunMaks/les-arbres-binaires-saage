@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -ansi
+CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -finline-functions -funroll-loops -ansi
 CLIBS = 
 OPT = -O3
 
