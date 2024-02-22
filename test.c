@@ -17,7 +17,7 @@
 #define MIN(x, y) (( (x) < (y) ) ? (x) : (y) )
 
 #define MAX_SIZE 4096
-typedef unsigned int uint;
+typedef unsigned int uint; 
 
 
 
@@ -25,6 +25,54 @@ typedef struct _noeud {
     char *nom;
     struct _noeud *left, *right;
 } Noeud, *Arbre;
+
+
+
+
+
+
+/* DOT */
+
+void ecrire_debut(FILE *fptr)
+{
+    fprintf(fptr, "digraph arbre{\n    node [ shape = record, height = .1]\n    edge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
+}
+
+
+
+
+void ecrire_arbre(FILE *fptr, Arbre arbre)
+{   
+    if (!arbre) { return; }     /* rien a faire */
+
+    fprintf(fptr,"    n%p [label=\"<gauche> | <valeur> %s | <droit>\"];\n", (void *) arbre, arbre->nom);
+
+    if (arbre->left) {
+        fprintf(fptr, "    n%p:gauche:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->left);
+        ecrire_arbre(fptr, arbre->left);
+    }
+
+    if (arbre->right) {
+        fprintf(fptr, "    n%p:droit:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->right);
+        ecrire_arbre(fptr, arbre->right);
+    }
+}
+
+
+
+void ecrire_fin(FILE *fptr) { fprintf(fptr, "}"); }
+
+
+
+void dessine( FILE *fptr , Arbre arbre) {
+    ecrire_debut(fptr);
+    ecrire_arbre(fptr, arbre);
+    ecrire_fin(fptr);
+}
+
+
+
+
 
 
 /* modifier */
@@ -187,7 +235,7 @@ Arbre construire_arbre(FILE *fichier)
     /* les sous-arbres droites */
     if ( !fgets(buffer, MAX_SIZE, fichier) ) { return NULL; }
 
-    if ( recherche_substring(buffer, "Droite :") ) {
+    if ( recherche_substring(buffer, "Droite :") ) {    /*strstr()*/
 
         if ( recherche_substring(buffer, "NULL") ) noeud->right = NULL;
         else noeud->right = construire_arbre(fichier);
@@ -214,7 +262,19 @@ Arbre arbre_de_fichier(const char *path)
 }
 
 
-
+/*
+int deserialise(char *nom_de_fichier, Arbre *A) 
+{
+    FILE *fptr = fopen(nom_de_fichier, "r");
+    if (!fptr) {
+        fprintf(stderr, "Erreur d'ouverture du fichier.saage: %s\n", strerror(errno));
+        return 0;
+    }
+    *A = construire_arbre(fptr);
+    fclose(fptr);
+    return 1;
+}
+*/
 
 
 Arbre cree_A_1(void)
@@ -269,7 +329,6 @@ uint comparer_chaines(const char *string_un, const char *string_deux)
         ++string_deux;
     }
     return (!*string_un && !*string_deux) ? (1) : (0);
-    
 }
 
 
@@ -289,6 +348,29 @@ Arbre copie(Arbre source)
 
     return new_node;
 }
+
+
+
+/*
+uint copie(Arbre *dest, Arbre source)
+{
+    
+    if (!source) { return 1; }
+
+    
+    if ( !(*dest = alloue(source->nom)) ) {
+        fprintf(stderr, "Erreur d'allocation de mémoire pour la copie de l'arbre.\n");
+        return 0;
+    }
+
+
+    if ( !copie(&((*dest)->left), source->left) ) { return 0; }
+
+    if ( !copie(&((*dest)->right), source->right) ){ return 0; }
+
+    return 1;
+}
+*/
 
 
 
@@ -397,22 +479,6 @@ void write_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 
 
 
-
-
-/* modifie */
-uint faire_greffe(Arbre *dest , Arbre source)
-{
-
-    if ( expansion(dest, source) ) {
-        return 1;
-    }
-
-    fprintf(stderr, "expansion a mal passe, la memoire ...\n");
-    return 0;
-}
-
-
-
 /* cree */
 uint creer_fichier_saage(Arbre arbre, const char *path_create)
 {
@@ -431,7 +497,24 @@ uint creer_fichier_saage(Arbre arbre, const char *path_create)
     return 1;
 }
 
+/*
+int serialise(char *nom_de_fichier, Arbre arbre)
+{
+    FILE *fptr_res = NULL;
+    uint count_tab = 0;
+    if (!arbre) { return 0; }
 
+    fptr_res = fopen(nom_de_fichier, "w");
+    if (!fptr_res) {
+        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", nom_de_fichier, strerror(errno));
+        return 0;
+    }
+
+    write_fichier_saage(fptr_res, arbre, count_tab);
+    fclose(fptr_res);
+    return 1;
+}
+*/
 
 
 
@@ -456,21 +539,21 @@ standard. (TO DO)
 
 int main(int argc, char *argv[])
 {
+    /*
     if (argc < 2) {
         printf("Pas assez d'arguments\n");
         return 0;
     }
 
     while (*++argv) {
-        /* saage -E fichier.saage */
+        // saage -E fichier.saage
         printf("%s\n", *argv);
 
-        /* saage -G s.saage g.saage */
+        // saage -G s.saage g.saage
     }
+    */
 
 
-
-    /*
     Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
     char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
 
@@ -482,7 +565,7 @@ int main(int argc, char *argv[])
 
     greffe = arbre_de_fichier(path_greffe); 
 
-    printf("greffe passé: %d\n", faire_greffe(&arbre_init, greffe));
+    printf("greffe passé: %d\n", expansion(&arbre_init, greffe));
 
     liberer_arbre(&greffe);
 
@@ -496,10 +579,24 @@ int main(int argc, char *argv[])
 
     printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));
 
+    /*
+    FILE *fptr = NULL;
+    fptr = fopen("visualise.dot", "w");
+    if (!fptr) {
+        printf("Erreur à l'ouverture du fichier nom.dot");
+        return 1;
+    } else { 
+        dessine(fptr, arbre_init);
+    }
+
+    fclose(fptr);
+    system("dot -Tpdf visualise.dot -o visualise.pdf");
+    system("evince visualise.pdf &");
+    */
 
     if (arbre_init) { liberer_arbre(&arbre_init); }
     if (res_attendu) { liberer_arbre(&res_attendu); }
-    */    /* pour être sur qu'on aura pas de segfault */
+    /* pour être sur qu'on aura pas de segfault */
 
     return 0;
 }

@@ -92,18 +92,6 @@ uint expansion(Arbre *dest, Arbre source)
 
 
 
-uint faire_greffe(Arbre *dest, Arbre source)
-{
-
-    if ( expansion(dest, source) ) {
-        return 1;
-    }
-
-    fprintf(stderr, "expansion a mal passe, la memoire ...\n");
-    return 0;
-}
-
-
 
 Arbre cree_A_1(void)
 {

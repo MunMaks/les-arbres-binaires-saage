@@ -9,7 +9,6 @@ extern void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right);
 extern Arbre copie(Arbre source);
 extern Arbre arbre_de_fichier(const char *path);
 extern uint expansion(Arbre *dest, Arbre source);
-extern uint faire_greffe(Arbre *dest, Arbre source);
 
 
 /* Des exemples */
