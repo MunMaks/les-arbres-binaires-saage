@@ -595,8 +595,15 @@ void greffe_dun_arbre(uint numero)
             res_attendu = arbre_de_fichier(path_res_att);
             break;
 
-        case 0:
+        case 4:
             arbre_init = arbre_de_fichier("exemples/hard.saage");
+            path_greffe = "exemples/greffe_hard.saage";
+
+            path_create = "exemples/created.saage";
+            greffe = arbre_de_fichier(path_greffe); 
+            break;
+        case 5:
+            arbre_init = arbre_de_fichier("exemples/ultra.saage");
             path_greffe = "exemples/greffe_hard.saage";
 
             path_create = "exemples/created.saage";
@@ -614,8 +621,7 @@ void greffe_dun_arbre(uint numero)
 
 
     /* Pour visualise l'arbre apres la greffe*/    
-    /* visualisation_dot(arbre_init); */
-
+    visualisation_dot(arbre_init);
 
     if (greffe) { liberer_arbre(&greffe); }
     if (arbre_init) { liberer_arbre(&arbre_init); }
@@ -628,9 +634,8 @@ void greffe_dun_arbre(uint numero)
 
 int main(int argc, char *argv[])
 {
-
-
-    greffe_dun_arbre(0);
+    
+    greffe_dun_arbre(4);
 
     return 0;
 }
