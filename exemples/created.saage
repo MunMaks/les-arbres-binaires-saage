@@ -1,156 +1,462 @@
-Valeur : Intel Core i9
+Valeur : Fortran
 Gauche : 
-    Valeur : Intel Core i9
+    Valeur : COBOL
     Gauche : 
-        Valeur : Apple M3 Max
+        Valeur : Python
         Gauche : 
-            Valeur : Apple M3 Max
-            Gauche : NULL
-            Droite : 
-                Valeur : AMD Ryzen 9
+            Valeur : Rust
+            Gauche : 
+                Valeur : GO
                 Gauche : 
-                    Valeur : Intel Core i9
+                    Valeur : Basic
+                    Gauche : NULL
+                    Droite : NULL
+                Droite : 
+                    Valeur : Algol
                     Gauche : 
-                        Valeur : Intel Core i9
+                        Valeur : Pascal
                         Gauche : 
-                            Valeur : Apple M3 Max
+                            Valeur : ADA
                             Gauche : NULL
                             Droite : NULL
                         Droite : 
-                            Valeur : AMD Ryzen 9
-                            Gauche : NULL
-                            Droite : NULL
-                    Droite : NULL
-                Droite : NULL
-        Droite : 
-            Valeur : Intel Core i9
-            Gauche : 
-                Valeur : Intel Core i9
-                Gauche : 
-                    Valeur : Apple M3 Max
-                    Gauche : 
-                        Valeur : Intel Core i9
-                        Gauche : 
-                            Valeur : Intel Core i9
+                            Valeur : COBOL
                             Gauche : 
-                                Valeur : Apple M3 Max
-                                Gauche : NULL
-                                Droite : NULL
+                                Valeur : Python
+                                Gauche : 
+                                    Valeur : Rust
+                                    Gauche : 
+                                        Valeur : GO
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : C#
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Javascript
+                                    Gauche : NULL
+                                    Droite : NULL
                             Droite : 
-                                Valeur : AMD Ryzen 9
-                                Gauche : NULL
-                                Droite : NULL
-                        Droite : NULL
+                                Valeur : Assembler
+                                Gauche : 
+                                    Valeur : Perl
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : R
+                                    Gauche : NULL
+                                    Droite : NULL
+                    Droite : NULL
+            Droite : 
+                Valeur : C#
+                Gauche : 
+                    Valeur : Basic
+                    Gauche : NULL
                     Droite : NULL
                 Droite : 
-                    Valeur : AMD Ryzen 9
+                    Valeur : Algol
                     Gauche : 
-                        Valeur : Intel Core i9
+                        Valeur : Pascal
                         Gauche : 
-                            Valeur : Intel Core i9
+                            Valeur : ADA
+                            Gauche : NULL
+                            Droite : NULL
+                        Droite : 
+                            Valeur : COBOL
                             Gauche : 
-                                Valeur : Apple M3 Max
+                                Valeur : Python
+                                Gauche : 
+                                    Valeur : Rust
+                                    Gauche : 
+                                        Valeur : GO
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : C#
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Javascript
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Assembler
+                                Gauche : 
+                                    Valeur : Perl
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : R
+                                    Gauche : NULL
+                                    Droite : NULL
+                    Droite : NULL
+        Droite : 
+            Valeur : Javascript
+            Gauche : 
+                Valeur : Basic
+                Gauche : NULL
+                Droite : NULL
+            Droite : 
+                Valeur : Algol
+                Gauche : 
+                    Valeur : Pascal
+                    Gauche : 
+                        Valeur : ADA
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : COBOL
+                        Gauche : 
+                            Valeur : Python
+                            Gauche : 
+                                Valeur : Rust
+                                Gauche : 
+                                    Valeur : GO
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : C#
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Javascript
+                                Gauche : NULL
+                                Droite : NULL
+                        Droite : 
+                            Valeur : Assembler
+                            Gauche : 
+                                Valeur : Perl
                                 Gauche : NULL
                                 Droite : NULL
                             Droite : 
-                                Valeur : AMD Ryzen 9
+                                Valeur : R
                                 Gauche : NULL
                                 Droite : NULL
-                        Droite : NULL
-                    Droite : NULL
-            Droite : NULL
+                Droite : NULL
     Droite : 
-        Valeur : AMD Ryzen 9
+        Valeur : Assembler
         Gauche : 
-            Valeur : Apple M3 Max
+            Valeur : Perl
+            Gauche : 
+                Valeur : Basic
+                Gauche : NULL
+                Droite : NULL
+            Droite : 
+                Valeur : Algol
+                Gauche : 
+                    Valeur : Pascal
+                    Gauche : 
+                        Valeur : ADA
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : COBOL
+                        Gauche : 
+                            Valeur : Python
+                            Gauche : 
+                                Valeur : Rust
+                                Gauche : 
+                                    Valeur : GO
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : C#
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Javascript
+                                Gauche : NULL
+                                Droite : NULL
+                        Droite : 
+                            Valeur : Assembler
+                            Gauche : 
+                                Valeur : Perl
+                                Gauche : NULL
+                                Droite : NULL
+                            Droite : 
+                                Valeur : R
+                                Gauche : NULL
+                                Droite : NULL
+                Droite : NULL
+        Droite : 
+            Valeur : R
+            Gauche : 
+                Valeur : Basic
+                Gauche : NULL
+                Droite : NULL
+            Droite : 
+                Valeur : Algol
+                Gauche : 
+                    Valeur : Pascal
+                    Gauche : 
+                        Valeur : ADA
+                        Gauche : NULL
+                        Droite : NULL
+                    Droite : 
+                        Valeur : COBOL
+                        Gauche : 
+                            Valeur : Python
+                            Gauche : 
+                                Valeur : Rust
+                                Gauche : 
+                                    Valeur : GO
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : C#
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Javascript
+                                Gauche : NULL
+                                Droite : NULL
+                        Droite : 
+                            Valeur : Assembler
+                            Gauche : 
+                                Valeur : Perl
+                                Gauche : NULL
+                                Droite : NULL
+                            Droite : 
+                                Valeur : R
+                                Gauche : NULL
+                                Droite : NULL
+                Droite : NULL
+Droite : 
+    Valeur : COBOL
+    Gauche : 
+        Valeur : Python
+        Gauche : 
+            Valeur : Rust
+            Gauche : 
+                Valeur : GO
+                Gauche : NULL
+                Droite : 
+                    Valeur : C
+                    Gauche : 
+                        Valeur : C++
+                        Gauche : 
+                            Valeur : Java
+                            Gauche : 
+                                Valeur : COBOL
+                                Gauche : 
+                                    Valeur : Python
+                                    Gauche : 
+                                        Valeur : Rust
+                                        Gauche : 
+                                            Valeur : GO
+                                            Gauche : NULL
+                                            Droite : NULL
+                                        Droite : 
+                                            Valeur : C#
+                                            Gauche : NULL
+                                            Droite : NULL
+                                    Droite : 
+                                        Valeur : Javascript
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Assembler
+                                    Gauche : 
+                                        Valeur : Perl
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : R
+                                        Gauche : NULL
+                                        Droite : NULL
+                            Droite : 
+                                Valeur : C#
+                                Gauche : NULL
+                                Droite : NULL
+                        Droite : 
+                            Valeur : PHP
+                            Gauche : NULL
+                            Droite : NULL
+                    Droite : NULL
+            Droite : 
+                Valeur : C#
+                Gauche : NULL
+                Droite : 
+                    Valeur : C
+                    Gauche : 
+                        Valeur : C++
+                        Gauche : 
+                            Valeur : Java
+                            Gauche : 
+                                Valeur : COBOL
+                                Gauche : 
+                                    Valeur : Python
+                                    Gauche : 
+                                        Valeur : Rust
+                                        Gauche : 
+                                            Valeur : GO
+                                            Gauche : NULL
+                                            Droite : NULL
+                                        Droite : 
+                                            Valeur : C#
+                                            Gauche : NULL
+                                            Droite : NULL
+                                    Droite : 
+                                        Valeur : Javascript
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Assembler
+                                    Gauche : 
+                                        Valeur : Perl
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : R
+                                        Gauche : NULL
+                                        Droite : NULL
+                            Droite : 
+                                Valeur : C#
+                                Gauche : NULL
+                                Droite : NULL
+                        Droite : 
+                            Valeur : PHP
+                            Gauche : NULL
+                            Droite : NULL
+                    Droite : NULL
+        Droite : 
+            Valeur : Javascript
             Gauche : NULL
             Droite : 
-                Valeur : AMD Ryzen 9
+                Valeur : C
                 Gauche : 
-                    Valeur : Intel Core i9
+                    Valeur : C++
                     Gauche : 
-                        Valeur : Intel Core i9
+                        Valeur : Java
                         Gauche : 
-                            Valeur : Apple M3 Max
-                            Gauche : NULL
-                            Droite : NULL
+                            Valeur : COBOL
+                            Gauche : 
+                                Valeur : Python
+                                Gauche : 
+                                    Valeur : Rust
+                                    Gauche : 
+                                        Valeur : GO
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : C#
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Javascript
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Assembler
+                                Gauche : 
+                                    Valeur : Perl
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : R
+                                    Gauche : NULL
+                                    Droite : NULL
                         Droite : 
-                            Valeur : AMD Ryzen 9
+                            Valeur : C#
                             Gauche : NULL
                             Droite : NULL
-                    Droite : NULL
+                    Droite : 
+                        Valeur : PHP
+                        Gauche : NULL
+                        Droite : NULL
                 Droite : NULL
-        Droite : 
-            Valeur : Intel Core i9
-            Gauche : 
-                Valeur : Intel Core i9
-                Gauche : 
-                    Valeur : Apple M3 Max
-                    Gauche : 
-                        Valeur : Intel Core i9
-                        Gauche : 
-                            Valeur : Intel Core i9
-                            Gauche : 
-                                Valeur : Apple M3 Max
-                                Gauche : NULL
-                                Droite : NULL
-                            Droite : 
-                                Valeur : AMD Ryzen 9
-                                Gauche : NULL
-                                Droite : NULL
-                        Droite : NULL
-                    Droite : NULL
-                Droite : 
-                    Valeur : AMD Ryzen 9
-                    Gauche : 
-                        Valeur : Intel Core i9
-                        Gauche : 
-                            Valeur : Intel Core i9
-                            Gauche : 
-                                Valeur : Apple M3 Max
-                                Gauche : NULL
-                                Droite : NULL
-                            Droite : 
-                                Valeur : AMD Ryzen 9
-                                Gauche : NULL
-                                Droite : NULL
-                        Droite : NULL
-                    Droite : NULL
-            Droite : NULL
-Droite : 
-    Valeur : Intel Core i9
-    Gauche : 
-        Valeur : Intel Core i9
+    Droite : 
+        Valeur : Assembler
         Gauche : 
-            Valeur : Apple M3 Max
-            Gauche : 
-                Valeur : Intel Core i9
+            Valeur : Perl
+            Gauche : NULL
+            Droite : 
+                Valeur : C
                 Gauche : 
-                    Valeur : Intel Core i9
+                    Valeur : C++
                     Gauche : 
-                        Valeur : Apple M3 Max
-                        Gauche : NULL
-                        Droite : NULL
+                        Valeur : Java
+                        Gauche : 
+                            Valeur : COBOL
+                            Gauche : 
+                                Valeur : Python
+                                Gauche : 
+                                    Valeur : Rust
+                                    Gauche : 
+                                        Valeur : GO
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : C#
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Javascript
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Assembler
+                                Gauche : 
+                                    Valeur : Perl
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : R
+                                    Gauche : NULL
+                                    Droite : NULL
+                        Droite : 
+                            Valeur : C#
+                            Gauche : NULL
+                            Droite : NULL
                     Droite : 
-                        Valeur : AMD Ryzen 9
+                        Valeur : PHP
                         Gauche : NULL
                         Droite : NULL
                 Droite : NULL
-            Droite : NULL
         Droite : 
-            Valeur : AMD Ryzen 9
-            Gauche : 
-                Valeur : Intel Core i9
+            Valeur : R
+            Gauche : NULL
+            Droite : 
+                Valeur : C
                 Gauche : 
-                    Valeur : Intel Core i9
+                    Valeur : C++
                     Gauche : 
-                        Valeur : Apple M3 Max
-                        Gauche : NULL
-                        Droite : NULL
+                        Valeur : Java
+                        Gauche : 
+                            Valeur : COBOL
+                            Gauche : 
+                                Valeur : Python
+                                Gauche : 
+                                    Valeur : Rust
+                                    Gauche : 
+                                        Valeur : GO
+                                        Gauche : NULL
+                                        Droite : NULL
+                                    Droite : 
+                                        Valeur : C#
+                                        Gauche : NULL
+                                        Droite : NULL
+                                Droite : 
+                                    Valeur : Javascript
+                                    Gauche : NULL
+                                    Droite : NULL
+                            Droite : 
+                                Valeur : Assembler
+                                Gauche : 
+                                    Valeur : Perl
+                                    Gauche : NULL
+                                    Droite : NULL
+                                Droite : 
+                                    Valeur : R
+                                    Gauche : NULL
+                                    Droite : NULL
+                        Droite : 
+                            Valeur : C#
+                            Gauche : NULL
+                            Droite : NULL
                     Droite : 
-                        Valeur : AMD Ryzen 9
+                        Valeur : PHP
                         Gauche : NULL
                         Droite : NULL
                 Droite : NULL
-            Droite : NULL
-    Droite : NULL

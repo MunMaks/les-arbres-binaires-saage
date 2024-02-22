@@ -537,6 +537,28 @@ standard. (TO DO)
 */
 
 
+
+
+
+
+void visualisation_dot(Arbre arbre_init)
+{
+    FILE *fptr = NULL;
+    fptr = fopen("exemples/visualise.dot", "w");
+    if (!fptr) {
+        printf("Erreur à l'ouverture du fichier visualise.dot"); return;
+    } else { 
+        dessine(fptr, arbre_init);
+    }
+
+    fclose(fptr);
+    system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
+    system("evince exemples/visualise.pdf &");
+}
+
+
+
+
 void greffe_dun_arbre(uint numero)
 {
     Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
@@ -573,16 +595,28 @@ void greffe_dun_arbre(uint numero)
             res_attendu = arbre_de_fichier(path_res_att);
             break;
 
+        case 0:
+            arbre_init = arbre_de_fichier("exemples/hard.saage");
+            path_greffe = "exemples/greffe_hard.saage";
+
+            path_create = "exemples/created.saage";
+            greffe = arbre_de_fichier(path_greffe); 
+            break;
         default:
             return;
     }
+
     if ( !expansion(&arbre_init, greffe) )
         fprintf(stderr, "Expansion a rate \n");
 
     if ( !creer_fichier_saage(arbre_init, path_create) )
         fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
 
-    /* printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu)); */
+
+    /* Pour visualise l'arbre apres la greffe*/    
+    /* visualisation_dot(arbre_init); */
+
+
     if (greffe) { liberer_arbre(&greffe); }
     if (arbre_init) { liberer_arbre(&arbre_init); }
     if (res_attendu) { liberer_arbre(&res_attendu); }
@@ -591,40 +625,12 @@ void greffe_dun_arbre(uint numero)
 
 
 
+
 int main(int argc, char *argv[])
 {
-    /*
-    if (argc < 2) {
-        printf("Pas assez d'arguments\n");
-        return 0;
-    }
-
-    while (*++argv) {
-        // saage -E fichier.saage
-        printf("%s\n", *argv);
-
-        // saage -G s.saage g.saage
-    }
-    */
-
-    greffe_dun_arbre(1);
 
 
-    /*
-    FILE *fptr = NULL;
-    fptr = fopen("visualise.dot", "w");
-    if (!fptr) {
-        printf("Erreur à l'ouverture du fichier nom.dot");
-        return 1;
-    } else { 
-        dessine(fptr, arbre_init);
-    }
-
-    fclose(fptr);
-    system("dot -Tpdf visualise.dot -o visualise.pdf");
-    system("evince visualise.pdf &");
-    */
-
+    greffe_dun_arbre(0);
 
     return 0;
 }

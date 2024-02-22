@@ -1,0 +1,42 @@
+Valeur : Fortran
+Gauche : 
+    Valeur : COBOL
+    Gauche : 
+        Valeur : Basic
+        Gauche : NULL
+        Droite : NULL
+    Droite : 
+        Valeur : Algol
+        Gauche : 
+            Valeur : Pascal
+            Gauche : 
+                Valeur : ADA
+                Gauche : NULL
+                Droite : NULL
+            Droite : 
+                Valuer : COBOL
+                Gauche : NULL
+                Droite : NULL
+        Droite : NULL
+Droite : 
+    Valuer : COBOL
+    Gauche : NULL
+    Droite : 
+        Valeur : C
+        Gauche : 
+            Valeur : C++
+            Gauche : 
+                Valeur : Java
+                Gauche : 
+                    Valeur : COBOL
+                    Gauche : NULL
+                    Droite : NULL
+                Droite : 
+                    Valeur : C#
+                    Gauche : NULL
+                    Droite : NULL
+            Droite : 
+                Valeur : PHP
+                Gauche : NULL
+                Droite : NULL
+        Droite : NULL
