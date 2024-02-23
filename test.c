@@ -3,14 +3,13 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-
 #include <assert.h>
 #include <stdarg.h>
 
-
-/* Macros de comparaisons */
+/* Macros de comparaisons 
 #define MAX(x, y) (( (x) > (y) ) ? (x) : (y) )
 #define MIN(x, y) (( (x) < (y) ) ? (x) : (y) )
+*/
 
 #define MAX_SIZE 4096
 #define CHAR_SIZE 256
@@ -24,14 +23,11 @@ typedef struct _noeud {
 
 
 
-/* DOT */
-
+/* DOT fonctions */
 void ecrire_debut(FILE *fptr)
 {
     fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
 }
-
-
 
 
 void ecrire_arbre(FILE *fptr, Arbre arbre)
@@ -54,7 +50,6 @@ void ecrire_arbre(FILE *fptr, Arbre arbre)
 
 
 void ecrire_fin(FILE *fptr) { fprintf(fptr, "}"); }
-
 
 
 void dessine( FILE *fptr , Arbre arbre)
@@ -108,7 +103,6 @@ void detruire_noeud(Noeud *noeud)
         free(noeud);
     }
 }
-
 
 void liberer_arbre(Arbre *arbre)
 {
@@ -178,14 +172,6 @@ uint comparer_chaines(const char *string_un, const char *string_deux)
         ++string_deux;
     }
     return (!*string_un && !*string_deux) ? (1) : (0);
-}
-
-
-int hauteur(const Arbre arbre)
-{
-    if (! arbre) return -1;
-    return 1 + MAX( hauteur(arbre->left), 
-                    hauteur(arbre->right) );
 }
 
 
