@@ -19,9 +19,10 @@
 #define MAX(x, y) (( (x) > (y) ) ? (x) : (y) )
 #define MIN(x, y) (( (x) < (y) ) ? (x) : (y) )
 
-
 #define MAX_SIZE 4096
-typedef unsigned int uint;
+#define CHAR_SIZE 256
+typedef unsigned int uint; 
+
 
 typedef struct _noeud{
     char *nom;
@@ -30,24 +31,16 @@ typedef struct _noeud{
 
 
 
-/* Fonction pour dot*/
-extern void ecrire_debut(FILE *fptr);
-extern void ecrire_arbre(FILE *fptr, Arbre arbre);
-extern void ecrire_fin(FILE *fptr);
-extern void dessin(FILE *fptr, Arbre arbre);
-
 
 /* Les fonctions pour les arbres */
 extern Arbre alloue(const char *chaine);
 extern void detruire_noeud(Noeud *noeud);
 extern void liberer_arbre(Arbre *arbre);
-extern Arbre construire_arbre(FILE *fichier);
-extern void BFS_ajoute_arbre(Arbre *arbre, char *chaine);  /* complementaire */
+extern Arbre construire_arbre(FILE *fptr);
 
 
-extern void affiche_arbre(Arbre arbre);
 extern uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux);
-
+extern uint creer_arbre(FILE *fptr, Arbre *arbre);
 
 
 /* les fonction pour les strings */
@@ -55,15 +48,13 @@ extern uint len_string(const char *mot);
 extern char *dupliquer_string(const char *source);
 extern char *recherche_lettre(const char *source, char lettre);
 extern char *recherche_substring(const char *fullString, const char *substring);
-extern int comparer_chaines(const char *string_un, const char *string_deux);
+extern uint comparer_chaines(const char *string_un, const char *string_deux);
+extern void copie_chaine(char* dest, const char* source);
+extern void concatenantion(char* dest, char* source);
 
 
 
-/* Les fonction pour travailler avec les fichiers*/
-extern void ajout_tabulation(FILE *fptr, uint count_tab);
-extern void write_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab);
-extern uint creer_fichier_saage(Arbre arbre, const char *path_create);
-
+extern void affiche_sur_stdout(const char *path_create);
 
 
 #endif

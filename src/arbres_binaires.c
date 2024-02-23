@@ -105,7 +105,7 @@ char* dupliquer_string(const char *source)
 
 /*  1 si deux chaînes sont identiques
     0 sinon */
-int comparer_chaines(const char *string_un, const char *string_deux)
+uint comparer_chaines(const char *string_un, const char *string_deux)
 {
     while (*string_un && *string_deux) {
         if (*string_un != *string_deux) return 0;
@@ -116,23 +116,28 @@ int comparer_chaines(const char *string_un, const char *string_deux)
 }
 
 
+/* cette fonction copie source dans dest */
+void copie_chaine(char* dest, const char* source)
+{
+    while ((*dest++ = *source++)) { ; /* boucle vide */ } 
+}
+
+
+
+/* cette fonction concatene destination et source */
+void concatenantion(char* dest, char* source)
+{
+    while (*dest) { dest++; }
+
+    while ((*dest++ = *source++)) { ; /* boucle vide */ }
+}
+
 
 /********************************************************/
 /*                                                      */
 /*                        ARBRES                        */
 /*                                                      */
 /********************************************************/
-
-
-
-void affiche_arbre(Arbre arbre)
-{
-    if (!arbre) return;
-    printf("%s \n", arbre->nom);
-    affiche_arbre(arbre->left);
-    affiche_arbre(arbre->right);
-}
-
 
 
 Arbre alloue(const char *chaine)
@@ -150,14 +155,14 @@ Arbre alloue(const char *chaine)
 
 
 
-Arbre construire_arbre(FILE *fichier)
+Arbre construire_arbre(FILE *fptr)
 {
     Arbre noeud = NULL;
     char buffer[MAX_SIZE];
     char *nom_noeud = NULL, *fin_nom_noeud = NULL;
 
     /* les valeurs */
-    if ( !fgets(buffer, MAX_SIZE, fichier) ) { return NULL; }
+    if ( !fgets(buffer, MAX_SIZE, fptr) ) { return NULL; }
 
     nom_noeud = recherche_lettre(buffer, ':');
     if (!nom_noeud) { return NULL; }
@@ -171,65 +176,26 @@ Arbre construire_arbre(FILE *fichier)
 
 
     /* les sous-arbres gauches */
-    if ( !fgets(buffer, MAX_SIZE, fichier) ) { return NULL; }
+    if ( !fgets(buffer, MAX_SIZE, fptr) ) { return NULL; }
 
     if ( recherche_substring(buffer, "Gauche :") ) {
 
         if ( recherche_substring(buffer, "NULL") ) noeud->left = NULL;
-        else noeud->left = construire_arbre(fichier);
+        else noeud->left = construire_arbre(fptr);
     }
 
 
     /* les sous-arbres droites */
-    if ( !fgets(buffer, MAX_SIZE, fichier) ) { return NULL; }
+    if ( !fgets(buffer, MAX_SIZE, fptr) ) { return NULL; }
 
     if ( recherche_substring(buffer, "Droite :") ) {
 
         if ( recherche_substring(buffer, "NULL") ) noeud->right = NULL;
-        else noeud->right = construire_arbre(fichier);
+        else noeud->right = construire_arbre(fptr);
     }
 
     return noeud;
 }
-
-
-
-/* l'ajout BFS dans l'arbre binaire */
-void BFS_ajoute_arbre(Arbre *arbre, char *chaine)
-{
-    Arbre file[MAX_SIZE];
-    int debut = 0, fin = 0;
-    if (!*arbre) {
-        *arbre = alloue(chaine);
-        return;
-    }
-
-    file[fin++] = *arbre;   /* Ajoute la racine dans la file */
-
-    while (debut != fin) {
-        Arbre noeud = file[debut++];    /* Récupère le premier élément de la file */
-        if (!noeud->left) {
-            noeud->left = alloue(chaine);
-            return;
-        } else if (!noeud->right) {
-            noeud->right = alloue(chaine);
-            return;
-        } else {
-            file[fin++] = noeud->left;
-            file[fin++] = noeud->right;
-        }
-    }
-}
-
-
-
-
-void ajout_tabulation(FILE *fptr, uint count_tab)
-{
-    uint i;
-    for (i = 0; i < count_tab; ++i) fprintf(fptr, "    ");    /* fprintf(fptr, "\t"); */
-}
-
 
 
 uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux) {
@@ -242,84 +208,62 @@ uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux) {
 }
 
 
-
-void write_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
+uint creer_arbre(FILE *fptr, Arbre *arbre)
 {
-    if (!arbre) { return; }
+    char buffer[MAX_SIZE];
+    char buffer_tmp[CHAR_SIZE];
+    char *fin_nom = NULL;
+    uint val = 0;
+    uint first_time = 1;
 
-    /* les valeurs */
-    ajout_tabulation(fptr, count_tab);
-    fprintf(fptr, "Valeur : %s\n", arbre->nom);
+    if ((fscanf(fptr, "%u", &val)) <= 0) { return 0; }
 
-    /* les sous-arbres gauches */
-    ajout_tabulation(fptr, count_tab);
-    fprintf(fptr, (arbre->left) ? ("Gauche : \n") : ("Gauche : NULL\n"));
-    write_fichier_saage(fptr, arbre->left, count_tab + 1);
+    if (!val) { *arbre = NULL; return 1; }
 
-    /* les sous-arbres droites */
-    ajout_tabulation(fptr, count_tab);
-    fprintf(fptr, (arbre->right) ? ("Droite : \n") : ("Droite : NULL\n"));
-    write_fichier_saage(fptr, arbre->right, count_tab + 1);
-}
+    /* prendre le nom de l'arbre */
+    while (1) {
+        if ((fscanf(fptr, "%s", buffer_tmp)) <= 0) { return 0; }
 
-
-
-uint creer_fichier_saage(Arbre arbre, const char *path_create)
-{
-    FILE *fptr_res = NULL;
-    uint count_tab = 0;
-    if (!arbre) { return 0; }   /* Arbre est NULL, rien a faire*/
-
-    fptr_res = fopen(path_create, "w");
-    if (!fptr_res) {
-        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create, strerror(errno));
-        return 0;
+        if ((fin_nom = recherche_substring(buffer_tmp, "\\n"))) {  /* pour supprimer \n avec guillemet (") */
+            *fin_nom = '\0';
+            if (first_time) {
+                copie_chaine(buffer, buffer_tmp + 1);
+                --first_time;
+            } else {
+                concatenantion(buffer, buffer_tmp);
+            }
+            break;
+        }
+        if (first_time) {
+            copie_chaine(buffer, buffer_tmp + 1);   /* pour passer le premier guillemet (") */
+            --first_time; } 
+        else {
+            concatenantion(buffer, buffer_tmp);
+        }
+        concatenantion(buffer, " ");
     }
 
-    write_fichier_saage(fptr_res, arbre, count_tab);
-    fclose(fptr_res);
-    return 1;
+
+    if ( !(*arbre = alloue(buffer)) ) { return 0; }
+
+    return creer_arbre(fptr, &((*arbre)->left)) &&
+           creer_arbre(fptr, &((*arbre)->right));
 }
 
 
 
 
-
-/* DOT */
-
-void ecrire_debut(FILE *fptr)
+void affiche_sur_stdout(const char *path_create)
 {
-    fprintf(fptr, 
-        "digraph arbre {\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
-}
+    FILE *fptr_create = NULL;
+    char ch;
 
+    fptr_create = fopen(path_create, "r");
 
+    if (!fptr_create) { return; }
 
-void ecrire_arbre(FILE *fptr, Arbre arbre)
-{   
-    if (!arbre) { return; }
+    while ((ch = fgetc(fptr_create)) != EOF) { putchar(ch); }
 
-    fprintf(fptr,"\tn%p [label=\"<gauche> | <valeur> %s | <droit>\"];\n", (void *) arbre, arbre->nom);
-
-    if (arbre->left) {
-        fprintf(fptr, "\tn%p:gauche:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->left);
-        ecrire_arbre(fptr, arbre->left);
-    }
-
-    if (arbre->right) {
-        fprintf(fptr, "\tn%p:droit:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->right);
-        ecrire_arbre(fptr, arbre->right);
-    }
-}
-
-
-
-void ecrire_fin(FILE *fptr) { fprintf(fptr, "}"); }
-
-
-
-void dessine( FILE *fptr , Arbre arbre) {
-    ecrire_debut(fptr);
-    ecrire_arbre(fptr, arbre);
-    ecrire_fin(fptr);
+    fclose(fptr_create);
+    remove(path_create);
 }

@@ -1,5 +1,3 @@
-#define _POSIX_C_SOURCE 200809L
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,7 +19,6 @@
 typedef unsigned int uint; 
 
 
-
 typedef struct _noeud {
     char *nom;
     struct _noeud *left, *right;
@@ -29,14 +26,11 @@ typedef struct _noeud {
 
 
 
-
-
-
 /* DOT */
 
 void ecrire_debut(FILE *fptr)
 {
-    fprintf(fptr, "digraph arbre{\n    node [ shape = record, height = .1]\n    edge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
+    fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
 }
 
 
@@ -46,15 +40,15 @@ void ecrire_arbre(FILE *fptr, Arbre arbre)
 {   
     if (!arbre) { return; }     /* rien a faire */
 
-    fprintf(fptr,"    n%p [label=\"<gauche> | <valeur> %s | <droit>\"];\n", (void *) arbre, arbre->nom);
+    fprintf(fptr,"\tn%p [label=\"<gauche> | <valeur> %s | <droit>\"];\n", (void *) arbre, arbre->nom);
 
     if (arbre->left) {
-        fprintf(fptr, "    n%p:gauche:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->left);
+        fprintf(fptr, "\tn%p:gauche:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->left);
         ecrire_arbre(fptr, arbre->left);
     }
 
     if (arbre->right) {
-        fprintf(fptr, "    n%p:droit:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->right);
+        fprintf(fptr, "\tn%p:droit:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->right);
         ecrire_arbre(fptr, arbre->right);
     }
 }
@@ -65,7 +59,8 @@ void ecrire_fin(FILE *fptr) { fprintf(fptr, "}"); }
 
 
 
-void dessine( FILE *fptr , Arbre arbre) {
+void dessine( FILE *fptr , Arbre arbre)
+{
     ecrire_debut(fptr);
     ecrire_arbre(fptr, arbre);
     ecrire_fin(fptr);
@@ -73,15 +68,14 @@ void dessine( FILE *fptr , Arbre arbre) {
 
 
 
-void visualisation_dot(Arbre arbre_init)
+void visualisation_dot(Arbre arbre)
 {
     FILE *fptr = NULL;
     fptr = fopen("exemples/visualise.dot", "w");
-    if (!fptr) {
-        printf("Erreur à l'ouverture du fichier visualise.dot"); return;
-    } else { 
-        dessine(fptr, arbre_init);
-    }
+
+    if (!fptr) { printf("Erreur à l'ouverture du fichier visualise.dot"); return; }
+
+    else { dessine(fptr, arbre); }
 
     fclose(fptr);
     system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
@@ -90,11 +84,25 @@ void visualisation_dot(Arbre arbre_init)
 
 
 
+void affiche_sur_stdout(const char *path_create)
+{
+    FILE *fptr_create = NULL;
+    char ch;
+
+    fptr_create = fopen(path_create, "r");
+
+    if (!fptr_create) { return; }
+
+    while ((ch = fgetc(fptr_create)) != EOF) { putchar(ch); }
+
+    fclose(fptr_create);
+    remove(path_create);
+}
+
 
 
 /* modifier */
 /* permet de gerer toute la memoire allouee */
-
 void detruire_noeud(Noeud *noeud)
 {
     if (noeud) {
@@ -205,6 +213,21 @@ char* dupliquer_string(const char *source)
 }
 
 
+/* cette fonction copie source dans dest */
+void copie_chaine(char* dest, const char* source)
+{
+    while ((*dest++ = *source++)) { ; /* boucle vide */ } 
+}
+
+
+/* cette fonction concatene destination et source */
+void concatenantion(char* dest, char* source)
+{
+    while (*dest) { dest++; }
+
+    while ((*dest++ = *source++)) { ; /* boucle vide */ }
+}
+
 
 
 Arbre alloue(const char *chaine)
@@ -212,7 +235,7 @@ Arbre alloue(const char *chaine)
     Arbre noeud = malloc(sizeof *noeud);
     if ( !noeud ) return NULL;
 
-    noeud->nom = dupliquer_string(chaine);  /* strdup() */
+    noeud->nom = dupliquer_string(chaine);
     if ( !(noeud->nom) ) { free(noeud); return NULL; }
 
     noeud->left = NULL;
@@ -228,6 +251,35 @@ Arbre alloue(const char *chaine)
 /*                        ARBRES                        */
 /*                                                      */
 /********************************************************/
+
+
+/* l'ajout BFS dans l'arbre binaire */
+void BFS_ajoute_arbre(Arbre *arbre, char *chaine)
+{
+    Arbre file[MAX_SIZE];
+    int debut = 0, fin = 0;
+    if (!*arbre) {
+        *arbre = alloue(chaine);
+        return;
+    }
+
+    file[fin++] = *arbre;   /* Ajoute la racine dans la file */
+
+    while (debut != fin) {
+        Arbre noeud = file[debut++];    /* Récupère le premier élément de la file */
+        if (!noeud->left) {
+            noeud->left = alloue(chaine);
+            return;
+        } else if (!noeud->right) {
+            noeud->right = alloue(chaine);
+            return;
+        } else {
+            file[fin++] = noeud->left;
+            file[fin++] = noeud->right;
+        }
+    }
+}
+
 
 
 /* modifier */
@@ -275,8 +327,7 @@ Arbre construire_arbre(FILE *fichier)
 
 
 
-
-/* modifier */
+/* la version de la fonction deserialise() mais plus parlante */
 Arbre arbre_de_fichier(const char *path)
 {
     Arbre arbre = NULL;
@@ -335,16 +386,7 @@ Arbre cree_A_3(void)
 
 
 
-
-void affiche_arbre(Arbre arbre)
-{
-    if (!arbre) return;
-    printf("%s \n", arbre->nom);
-    affiche_arbre(arbre->left);
-    affiche_arbre(arbre->right);
-}
-
-
+/*
 Arbre copie(Arbre source)
 {
     Arbre new_node = NULL;
@@ -360,14 +402,14 @@ Arbre copie(Arbre source)
 
     return new_node;
 }
+*/
 
 
 
-/*
 uint copie(Arbre *dest, Arbre source)
 {
     
-    if (!source) { return 1; }
+    if (!source) { *dest = NULL; return 1; }
 
     
     if ( !(*dest = alloue(source->nom)) ) {
@@ -376,13 +418,13 @@ uint copie(Arbre *dest, Arbre source)
     }
 
 
-    if ( !copie(&((*dest)->left), source->left) ) { return 0; }
+    if ( !(copie(&((*dest)->left), source->left)) ) { return 0; }
 
-    if ( !copie(&((*dest)->right), source->right) ){ return 0; }
+    if ( !(copie(&((*dest)->right), source->right)) ) { return 0; }
 
     return 1;
 }
-*/
+
 
 
 
@@ -401,13 +443,11 @@ void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 
     /* inserer les sous arbres */
     if ( !((*arbre)->left) ) { 
-        left_copie = copie(left);
-        (*arbre)->left = left_copie;
+        if ( copie(&left_copie, left) ) { (*arbre)->left = left_copie; }
     }
 
     if ( !((*arbre)->right) ) {
-        right_copie = copie(right);
-        (*arbre)->right = right_copie;
+        if ( copie(&right_copie, right) ) { (*arbre)->right = right_copie; }
     }
 }
 
@@ -419,6 +459,7 @@ void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 uint expansion(Arbre *dest, Arbre source)
 {
     uint left = 0, right = 0;
+    Arbre source_copie = NULL;
     if (!source || !*dest) return 0;
 
     left = ((*dest)->left) ? expansion(&((*dest)->left), source) : 1;
@@ -426,8 +467,8 @@ uint expansion(Arbre *dest, Arbre source)
     right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 1;
 
     if ( comparer_chaines((*dest)->nom, source->nom) ) {
-
-        Arbre source_copie = copie(source);
+        
+        if ( !copie(&source_copie, source) ) { return 0; }
 
         /* On effectue l'ajout des sous arbres de *dest a copie de source */
         if (!source_copie) {
@@ -443,9 +484,6 @@ uint expansion(Arbre *dest, Arbre source)
     }
     return left && right;
 }
-
-
-
 
 
 
@@ -490,7 +528,7 @@ void write_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 
 
 
-/* cree */
+/* la version de la fonction serialise() mais plus parlante */
 uint creer_fichier_saage(Arbre arbre, const char *path_create)
 {
     FILE *fptr_res = NULL;
@@ -531,17 +569,6 @@ int serialise(char *nom_de_fichier, Arbre arbre)
 /*-Wextra -finline-functions -funroll-loops*/
 /* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -Werror -finline-functions -funroll-loops -ansi -O3 test.c */
 /* valgrind --leak-check=full --show-leak-kinds=all ./main*/
-
-/* 
-• saage -E fichier.saage crée une sauvegarde dans le fichier .saage
-d’un arbre saisi par l’utilisateur au clavier. (TO DO)
-• saage -G s.saage g.saage crée l’arbre où le greffon g.saage
-est appliqué à l’arbre source stocké dans s.saage. (TO DO)
-Le résultat de la greffe sera fournis sur la sortie standard au format .saage 
-
-*/
-
-
 
 
 void greffe_dun_arbre(uint numero)
@@ -601,11 +628,12 @@ void greffe_dun_arbre(uint numero)
     if ( !expansion(&arbre_init, greffe) )
         fprintf(stderr, "Expansion a rate \n");
 
-    if ( !creer_fichier_saage(arbre_init, path_create) )
+    if ( !creer_fichier_saage(arbre_init, path_create) ) {
+        remove(path_create);
         fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
+    }
 
-
-    /* Pour visualise l'arbre apres la greffe*/    
+    /* Pour visualise l'arbre apres la greffe*/
     visualisation_dot(arbre_init);
 
     if (greffe) { liberer_arbre(&greffe); }
@@ -628,36 +656,8 @@ int main(int argc, char *argv[])
 
 
 
-/* cette fonction copie source dans dest */
-void copie_chaine(char* dest, const char* source)
-{
-    while ((*dest++ = *source++)) { ; /* boucle vide */ } 
-}
 
 
-/* cette fonction concatene destination et source */
-void concatenantion(char* dest, char* source)
-{
-    while (*dest) { dest++; }
-
-    while ((*dest++ = *source++)) { ; /* boucle vide */ }
-}
-
-
-void affiche_sur_stdout(const char *path_create)
-{
-    FILE *fptr_create = NULL;
-    char ch;
-
-    fptr_create = fopen(path_create, "r");
-
-    if (!fptr_create) { return; }
-
-    while ((ch = fgetc(fptr_create)) != EOF) { putchar(ch); }
-
-    fclose(fptr_create);
-    remove(path_create);
-}
 
 
 /* valgrind ./main -G hard.saage greffe_hard.saage */
@@ -699,6 +699,7 @@ uint option_G_main(char *argv[])
     path_create = "exemples/new_fichier.saage"; 
     /*path_create = ".\\exemples\\new_fichier.saage";*/
     if (!creer_fichier_saage(arbre_init, path_create)) {
+        remove(path_create);
         if (arbre_init) { liberer_arbre(&arbre_init); }
         return 0;
     }
@@ -781,6 +782,7 @@ void option_E_main(char *path_create)
     concatenantion(path_init, path_create);
 
     if ( !creer_fichier_saage(arbre_cree, path_init) ){
+        remove(path_init);
         if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
     }
 
@@ -789,27 +791,24 @@ void option_E_main(char *path_create)
 
 
 /* ./main -DOT fichier.saage */
-
-void option_DOT_main(char *argv) {
+/*
+void option_DOT_main(char *path_create)
+{
     Arbre arbre = NULL;
     arbre = construire_arbre(fptr);
     visualisation_dot(arbre);
 }
-
+*/
 
 
 
 int main(int argc, char *argv[])
 {
-
-    /*char* path_res_att = "exemples/A_3_apres_greffe_de_D.saage";*/
     /*
     if (argc != 4) {
         fprintf(stderr, "Usage: %s -G s.saage g.saage\n", argv[0]);
-        return 1;
-    }
-    */
-    /* ./saage -E fichier.saage */
+        return 1; } */
+
     uint i;
     for (i = 0; i < argc; ++i) {
         if ( recherche_substring(*(argv + i), "-G") ) {
@@ -835,5 +834,4 @@ int main(int argc, char *argv[])
     printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));*/
     return 0;
 }
-
 
