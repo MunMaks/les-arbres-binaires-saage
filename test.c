@@ -17,6 +17,7 @@
 #define MIN(x, y) (( (x) < (y) ) ? (x) : (y) )
 
 #define MAX_SIZE 4096
+#define CHAR_SIZE 256
 typedef unsigned int uint; 
 
 
@@ -643,25 +644,45 @@ void concatenantion(char* dest, char* source)
 }
 
 
+void affiche_sur_stdout(const char *path_create)
+{
+    FILE *fptr_create = NULL;
+    char ch;
+
+    fptr_create = fopen(path_create, "r");
+
+    if (!fptr_create) { return; }
+
+    while ((ch = fgetc(fptr_create)) != EOF) { putchar(ch); }
+
+    fclose(fptr_create);
+    remove(path_create);
+}
+
+
 /* valgrind ./main -G hard.saage greffe_hard.saage */
-
-
-uint main_option_G(int argc, char *argv[])
+uint option_G_main(char *argv[])
 {
     FILE *fptr_create = NULL;
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
-    char path_init[MAX_SIZE];
-    char path_greffe[MAX_SIZE];
+    char path_init[CHAR_SIZE];
+    char path_greffe[CHAR_SIZE];
     char ch;
 
-
+    /*
     copie_chaine(path_init, "exemples/");
     concatenantion(path_init, argv[2]);
     
     copie_chaine(path_greffe, "exemples/");
     concatenantion(path_greffe, argv[3]);
+    */
 
+    copie_chaine(path_init, ".\\exemples\\");
+    concatenantion(path_init, *(argv + 2));
+    
+    copie_chaine(path_greffe, ".\\exemples\\");
+    concatenantion(path_greffe, *(argv + 3));
 
     arbre_init = arbre_de_fichier(path_init); 
     if (!arbre_init) { return 0; }
@@ -672,30 +693,71 @@ uint main_option_G(int argc, char *argv[])
 
     if ( !expansion(&arbre_init, greffe) ) {
         if (arbre_init) { liberer_arbre(&arbre_init); }
-        if (arbre_init) { liberer_arbre(&greffe); }
+        if (greffe) { liberer_arbre(&greffe); }
         return 0;
     }
     liberer_arbre(&greffe);
 
-
-    path_create = "exemples/new_fichier.saage";
+    /* path_create = "exemples/new_fichier.saage"; */
+    path_create = ".\\exemples\\new_fichier.saage";
     if (!creer_fichier_saage(arbre_init, path_create)) {
         if (arbre_init) { liberer_arbre(&arbre_init); }
         return 0;
     }
 
-    fptr_create = fopen(path_create, "r");
-    if (!fptr_create) { return 0; }
-
-    while ((ch = fgetc(fptr_create)) != EOF) { putchar(ch); }
-
-    fclose(fptr_create);
-
-    remove(path_create);
+    affiche_sur_stdout(path_create);
 
     /*if (res_attendu) { liberer_arbre(&res_attendu); } */
     if (arbre_init) { liberer_arbre(&arbre_init); }
     return 1;
+}
+
+
+
+uint creer_arbre(FILE *fptr, Arbre *root)
+{
+    char buffer[CHAR_SIZE];
+    uint val = 0;
+
+    if ((fscanf(fptr, "%u ", &val)) <= 0) {
+        return 0;
+    }
+    if (!val) { return 1; }
+
+    if ((fscanf(fptr, "%s ", buffer)) <= 0) {
+        return 0;
+    }
+
+    if ( ! (*root = alloue(buffer)) ) {
+        return 0;
+    }
+
+    return creer_arbre(fptr, &((*root)->left)) &&
+           creer_arbre(fptr, &((*root)->right));
+}
+
+
+/* la fonction pour option -E d'abord avec le fichier.saage et new.saage (pour créer) */
+void option_E_main(char *path)
+{
+    Arbre arbre_cree = NULL;
+    char path_init[CHAR_MAX];
+    FILE *fptr = fopen(".\\exemples\\clavier.saage", "r");
+
+    if (!fptr) { return; }
+
+    if ( !creer_arbre(fptr, &arbre_cree) ) {
+        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
+    }
+
+    copie_chaine(path_init, ".\\exemples\\");
+    concatenantion(path_init, path);
+
+    if ( !creer_fichier_saage(arbre_cree, path_init) ){
+        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
+    }
+
+    if (arbre_cree) { liberer_arbre(&arbre_cree); }
 }
 
 
@@ -709,10 +771,26 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Usage: %s -G s.saage g.saage\n", argv[0]);
         return 1;
     }
-    main_option_G(argc, argv);
     */
+    /* ./saage -E fichier.saage */
+    uint i;
+    for (i = 0; i < argc; ++i) {
+        if ( recherche_substring(*(argv + i), "-G") ) {
+            option_G_main(argv);
+            return 0;
+        }
+        else if ( recherche_substring( *(argv + i), "-E") ) {
+            printf("-E existe\n");
+            if ( recherche_substring(*(argv + i), "saage") ) {
+                char *path_create = *(++argv + i);
+                option_E_main(path_create);
+            }
+            return 0;
+        }
+    }
 
-    greffe_dun_arbre(5);
+
+    /* greffe_dun_arbre(5); */
 
     /*res_attendu = arbre_de_fichier(path_res_att);
     printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));*/
