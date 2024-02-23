@@ -663,27 +663,25 @@ void affiche_sur_stdout(const char *path_create)
 /* valgrind ./main -G hard.saage greffe_hard.saage */
 uint option_G_main(char *argv[])
 {
-    FILE *fptr_create = NULL;
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
     char path_init[CHAR_SIZE];
     char path_greffe[CHAR_SIZE];
-    char ch;
 
-    /*
+
     copie_chaine(path_init, "exemples/");
-    concatenantion(path_init, argv[2]);
+    concatenantion(path_init, *(argv + 2));
     
     copie_chaine(path_greffe, "exemples/");
-    concatenantion(path_greffe, argv[3]);
-    */
+    concatenantion(path_greffe, *(argv + 3));
 
+    /*
     copie_chaine(path_init, ".\\exemples\\");
     concatenantion(path_init, *(argv + 2));
     
     copie_chaine(path_greffe, ".\\exemples\\");
     concatenantion(path_greffe, *(argv + 3));
-
+    */
     arbre_init = arbre_de_fichier(path_init); 
     if (!arbre_init) { return 0; }
 
@@ -698,8 +696,8 @@ uint option_G_main(char *argv[])
     }
     liberer_arbre(&greffe);
 
-    /* path_create = "exemples/new_fichier.saage"; */
-    path_create = ".\\exemples\\new_fichier.saage";
+    path_create = "exemples/new_fichier.saage"; 
+    /*path_create = ".\\exemples\\new_fichier.saage";*/
     if (!creer_fichier_saage(arbre_init, path_create)) {
         if (arbre_init) { liberer_arbre(&arbre_init); }
         return 0;
@@ -714,44 +712,73 @@ uint option_G_main(char *argv[])
 
 
 
-uint creer_arbre(FILE *fptr, Arbre *root)
+uint creer_arbre(FILE *fptr, Arbre *arbre)
 {
-    char buffer[CHAR_SIZE];
+    char buffer[MAX_SIZE];
+    char buffer_tmp[CHAR_SIZE];
+    char *fin_nom = NULL;
     uint val = 0;
+    uint first_time = 1;
 
-    if ((fscanf(fptr, "%u ", &val)) <= 0) {
-        return 0;
+    if ((fscanf(fptr, "%u", &val)) <= 0) { return 0; }
+
+    if (!val) { *arbre = NULL; return 1; }
+
+    /* prendre le nom de l'arbre */
+    while (1) {
+        if ((fscanf(fptr, "%s", buffer_tmp)) <= 0) { return 0; }
+
+        if ((fin_nom = recherche_substring(buffer_tmp, "\\n"))) {  /* pour supprimer \n avec guillemet (") */
+            *fin_nom = '\0';
+            if (first_time) {
+                copie_chaine(buffer, buffer_tmp + 1);
+                --first_time;
+            } else {
+                concatenantion(buffer, buffer_tmp);
+            }
+            break;
+        }
+        if (first_time) {
+            copie_chaine(buffer, buffer_tmp + 1);   /* pour passer le premier guillemet (") */
+            --first_time; } 
+        else {
+            concatenantion(buffer, buffer_tmp);
+        }
+        concatenantion(buffer, " ");
     }
-    if (!val) { return 1; }
 
-    if ((fscanf(fptr, "%s ", buffer)) <= 0) {
-        return 0;
-    }
 
-    if ( ! (*root = alloue(buffer)) ) {
-        return 0;
-    }
+    if ( !(*arbre = alloue(buffer)) ) { return 0; }
 
-    return creer_arbre(fptr, &((*root)->left)) &&
-           creer_arbre(fptr, &((*root)->right));
+    return creer_arbre(fptr, &((*arbre)->left)) &&
+           creer_arbre(fptr, &((*arbre)->right));
 }
 
 
+
 /* la fonction pour option -E d'abord avec le fichier.saage et new.saage (pour créer) */
-void option_E_main(char *path)
+void option_E_main(char *path_create)
 {
     Arbre arbre_cree = NULL;
-    char path_init[CHAR_MAX];
-    FILE *fptr = fopen(".\\exemples\\clavier.saage", "r");
+    char path_init[CHAR_SIZE];
+    FILE *fptr = NULL;
 
-    if (!fptr) { return; }
+    fptr = fopen("exemples/clavier.saage", "r");
 
-    if ( !creer_arbre(fptr, &arbre_cree) ) {
-        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
+    if (!fptr) { 
+        fprintf(stderr, "l'ouverture du fichier clavier.saage mal passe\n");
+        return;
     }
 
-    copie_chaine(path_init, ".\\exemples\\");
-    concatenantion(path_init, path);
+    if ( !creer_arbre(fptr, &arbre_cree) ) {
+        fprintf(stderr, "la creation d'un arbre mal passe\n"); 
+        if (arbre_cree) { liberer_arbre(&arbre_cree); }
+        fclose(fptr);
+        return;
+    }
+    fclose(fptr);
+    copie_chaine(path_init, "exemples/");
+    concatenantion(path_init, path_create);
 
     if ( !creer_fichier_saage(arbre_cree, path_init) ){
         if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
@@ -759,6 +786,16 @@ void option_E_main(char *path)
 
     if (arbre_cree) { liberer_arbre(&arbre_cree); }
 }
+
+
+/* ./main -DOT fichier.saage */
+
+void option_DOT_main(char *argv) {
+    Arbre arbre = NULL;
+    arbre = construire_arbre(fptr);
+    visualisation_dot(arbre);
+}
+
 
 
 
@@ -776,13 +813,15 @@ int main(int argc, char *argv[])
     uint i;
     for (i = 0; i < argc; ++i) {
         if ( recherche_substring(*(argv + i), "-G") ) {
-            option_G_main(argv);
+            if (recherche_substring(*(argv+1 + i), ".saage") &&
+                recherche_substring(*(argv+2 + i), ".saage") ) {
+                option_G_main(argv);
+            }
             return 0;
         }
         else if ( recherche_substring( *(argv + i), "-E") ) {
-            printf("-E existe\n");
-            if ( recherche_substring(*(argv + i), "saage") ) {
-                char *path_create = *(++argv + i);
+            if ( recherche_substring(*(++argv + i), ".saage") ) {
+                char *path_create = *(argv + i);
                 option_E_main(path_create);
             }
             return 0;
