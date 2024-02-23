@@ -1,14 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <time.h>
-#include <stdint.h>
-
-#include <stdarg.h>
-#include <ctype.h>
-#include <stdint.h>
 #include <errno.h>
+
+#include <assert.h>
+#include <stdarg.h>
+
 
 /* Macros de comparaisons */
 #define MAX(x, y) (( (x) > (y) ) ? (x) : (y) )
@@ -825,6 +823,14 @@ int main(int argc, char *argv[])
             }
             return 0;
         }
+        /*else if ( recherche_substring( *(argv + i), "-DOT") ) {
+            if ( recherche_substring(*(++argv + i), ".saage") ) {
+                char *path_create = *(argv + i);
+                option_DOT_main(path_create);
+            }
+            return 0;
+        }
+        */
     }
 
 
