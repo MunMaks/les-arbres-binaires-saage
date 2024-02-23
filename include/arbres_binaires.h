@@ -43,7 +43,7 @@ extern uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux);
 extern uint creer_arbre(FILE *fptr, Arbre *arbre);
 
 
-/* les fonction pour les strings */
+/* les fonctions pour les strings */
 extern uint len_string(const char *mot);
 extern char *dupliquer_string(const char *source);
 extern char *recherche_lettre(const char *source, char lettre);

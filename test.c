@@ -714,20 +714,25 @@ uint option_G_main(char *argv[])
 uint creer_arbre(FILE *fptr, Arbre *arbre)
 {
     char buffer[MAX_SIZE];
-    char buffer_tmp[CHAR_SIZE];
+    /*char buffer_tmp[CHAR_SIZE];
     char *fin_nom = NULL;
+    uint first_time = 1;*/
     uint val = 0;
-    uint first_time = 1;
-
     if ((fscanf(fptr, "%u", &val)) <= 0) { return 0; }
 
     if (!val) { *arbre = NULL; return 1; }
 
+    /* Chat GPT propose cette solution: */
+    if (fscanf(fptr, "\"%[^\"]\"", buffer) <= 0) {
+        return 0;
+    }
+
     /* prendre le nom de l'arbre */
+    /*
     while (1) {
         if ((fscanf(fptr, "%s", buffer_tmp)) <= 0) { return 0; }
 
-        if ((fin_nom = recherche_substring(buffer_tmp, "\\n"))) {  /* pour supprimer \n avec guillemet (") */
+        if ((fin_nom = recherche_substring(buffer_tmp, "\\n"))) {  // pour supprimer \n avec guillemet (")
             *fin_nom = '\0';
             if (first_time) {
                 copie_chaine(buffer, buffer_tmp + 1);
@@ -738,14 +743,14 @@ uint creer_arbre(FILE *fptr, Arbre *arbre)
             break;
         }
         if (first_time) {
-            copie_chaine(buffer, buffer_tmp + 1);   /* pour passer le premier guillemet (") */
+            copie_chaine(buffer, buffer_tmp + 1);   // pour passer le premier guillemet (") 
             --first_time; } 
         else {
             concatenantion(buffer, buffer_tmp);
         }
         concatenantion(buffer, " ");
     }
-
+    */
 
     if ( !(*arbre = alloue(buffer)) ) { return 0; }
 
@@ -789,48 +794,62 @@ void option_E_main(char *path_create)
 
 
 /* ./main -DOT fichier.saage */
-/*
+/* il faut tester cette fonction */
 void option_DOT_main(char *path_create)
 {
+    FILE *fptr = NULL;
     Arbre arbre = NULL;
-    arbre = construire_arbre(fptr);
-    visualisation_dot(arbre);
+    char buffer[MAX_SIZE];
+
+    /* exemples/path_create */
+    if (recherche_substring(path_create, "exemples/")) {    
+        copie_chaine(buffer, path_create);
+    } else {  /* path_create */
+        copie_chaine(buffer, "exemples/");
+        concatenantion(buffer, path_create);
+    }
+
+    arbre = arbre_de_fichier(buffer);
+
+    /* si le buffer contient un chemin invalid, alors rien se passe...*/
+    if (arbre) {
+        visualisation_dot(arbre);
+        liberer_arbre(&arbre);
+    }
 }
-*/
+
 
 
 
 int main(int argc, char *argv[])
 {
-    /*
-    if (argc != 4) {
-        fprintf(stderr, "Usage: %s -G s.saage g.saage\n", argv[0]);
-        return 1; } */
-
     uint i;
-    for (i = 0; i < argc; ++i) {
+    for (i = 1; i < argc; ++i) {
+        /* saage -G s.saage g.saage */
         if ( recherche_substring(*(argv + i), "-G") ) {
-            if (recherche_substring(*(argv+1 + i), ".saage") &&
-                recherche_substring(*(argv+2 + i), ".saage") ) {
-                option_G_main(argv);
+
+            if (recherche_substring(*(argv + 1 + i), ".saage") && 
+                recherche_substring(*(argv + 2 + i), ".saage") && 
+                i + 2 < argc)
+                { option_G_main(argv); }
+
+            return 0;
+        }
+        /* -E ou -DOT option*/
+        else if (recherche_substring( *(argv + i), "-E") ||
+                 recherche_substring( *(argv + i), "-DOT")) {
+
+            if (recherche_substring(*(argv + 1 + i), ".saage") &&
+                i + 1 < argc) {
+                char *path_create = *(argv + 1 + i);
+                if (recherche_substring( *(argv + i), "-E"))
+                    option_E_main(path_create);
+                else
+                    option_DOT_main(path_create);
+
             }
             return 0;
         }
-        else if ( recherche_substring( *(argv + i), "-E") ) {
-            if ( recherche_substring(*(++argv + i), ".saage") ) {
-                char *path_create = *(argv + i);
-                option_E_main(path_create);
-            }
-            return 0;
-        }
-        /*else if ( recherche_substring( *(argv + i), "-DOT") ) {
-            if ( recherche_substring(*(++argv + i), ".saage") ) {
-                char *path_create = *(argv + i);
-                option_DOT_main(path_create);
-            }
-            return 0;
-        }
-        */
     }
 
 
