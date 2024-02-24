@@ -142,13 +142,6 @@ uint option_G_main(char *argv[])
     copie_chaine(path_greffe, "exemples/");
     concatenantion(path_greffe, *(argv + 3));
 
-    /*
-    copie_chaine(path_init, ".\\exemples\\");
-    concatenantion(path_init, *(argv + 2));
-    
-    copie_chaine(path_greffe, ".\\exemples\\");
-    concatenantion(path_greffe, *(argv + 3));
-    */
     arbre_init = arbre_de_fichier(path_init); 
     if (!arbre_init) { return 0; }
 
@@ -164,7 +157,6 @@ uint option_G_main(char *argv[])
     liberer_arbre(&greffe);
 
     path_create = "exemples/new_fichier.saage"; 
-    /*path_create = ".\\exemples\\new_fichier.saage";*/
     if (!creer_fichier_saage(arbre_init, path_create)) {
         remove(path_create);
         if (arbre_init) { liberer_arbre(&arbre_init); }
@@ -173,10 +165,32 @@ uint option_G_main(char *argv[])
 
     affiche_sur_stdout(path_create);
 
-    /*if (res_attendu) { liberer_arbre(&res_attendu); } */
     if (arbre_init) { liberer_arbre(&arbre_init); }
     return 1;
 }
+
+void option_DOT_main(char *path_create)
+{
+    Arbre arbre = NULL;
+    char buffer[MAX_SIZE];
+
+    /* exemples/path_create */
+    if (recherche_substring(path_create, "exemples/")) {    
+        copie_chaine(buffer, path_create);
+    } else {  /* path_create */
+        copie_chaine(buffer, "exemples/");
+        concatenantion(buffer, path_create);
+    }
+
+    arbre = arbre_de_fichier(buffer);
+
+    /* si le buffer contient un chemin invalid, alors rien se passe...*/
+    if (arbre) {
+        visualisation_dot(arbre);
+        liberer_arbre(&arbre);
+    }
+}
+
 
 
 /* la fonction pour option -E d'abord avec le fichier.saage et new.saage (pour créer) */
@@ -210,14 +224,3 @@ void option_E_main(char *path_create)
 
     if (arbre_cree) { liberer_arbre(&arbre_cree); }
 }
-
-
-/* ./main -DOT fichier.saage */
-/*
-void option_DOT_main(char *argv)
-{
-    Arbre arbre = NULL;
-    arbre = construire_arbre(fptr);
-    visualisation_dot(arbre);
-}
-*/

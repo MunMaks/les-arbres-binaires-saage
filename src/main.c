@@ -4,24 +4,30 @@
 
 int main(int argc, char *argv[])
 {
-    /*
-    if (argc != 4) {
-        fprintf(stderr, "Usage: %s -G s.saage g.saage\n", argv[0]);
-        return 1; } */
-
     uint i;
-    for (i = 0; i < argc; ++i) {
+    for (i = 1; i < argc; ++i) {
+        /* saage -G s.saage g.saage */
         if ( recherche_substring(*(argv + i), "-G") ) {
-            if (recherche_substring(*(argv+1 + i), ".saage") &&
-                recherche_substring(*(argv+2 + i), ".saage") ) {
-                option_G_main(argv);
-            }
+
+            if (recherche_substring(*(argv + 1 + i), ".saage") && 
+                recherche_substring(*(argv + 2 + i), ".saage") && 
+                i + 2 < argc)
+                { option_G_main(argv); }
+
             return 0;
         }
-        else if ( recherche_substring( *(argv + i), "-E") ) {
-            if ( recherche_substring(*(++argv + i), ".saage") ) {
-                char *path_create = *(argv + i);
-                option_E_main(path_create);
+        /* -E ou -DOT option*/
+        else if (recherche_substring( *(argv + i), "-E") ||
+                 recherche_substring( *(argv + i), "-DOT")) {
+
+            if (recherche_substring(*(argv + 1 + i), ".saage") &&
+                i + 1 < argc) {
+                char *path_create = *(argv + 1 + i);
+                if (recherche_substring( *(argv + i), "-E"))
+                    option_E_main(path_create);
+                else
+                    option_DOT_main(path_create);
+
             }
             return 0;
         }
