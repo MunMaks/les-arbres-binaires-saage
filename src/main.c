@@ -30,11 +30,10 @@ int main(int argc, char *argv[])
 
             }
             return 0;
+        } else {
+            greffe_dun_arbre(5);
         }
     }
-
-
-    /* greffe_dun_arbre(5); */
 
     /*res_attendu = arbre_de_fichier(path_res_att);
     printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));*/
