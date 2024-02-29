@@ -1,0 +1,7 @@
+1 Intel Core i9
+1 Apple M3 Max
+0 1 AMD Ryzen 9
+1 Intel Core i9
+0 0 0 1 Intel Core i9
+1 Intel Core i9
+0 0 0

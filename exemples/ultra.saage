@@ -20,5 +20,8 @@ Droite :
         Droite : NULL
     Droite : 
         Valeur : COBOL
-        Gauche : NULL
+        Gauche : 
+            Valeur : COBOL
+            Gauche : NULL
+            Droite : NULL
         Droite : NULL

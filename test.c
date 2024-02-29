@@ -1,3 +1,6 @@
+#define _GNU_SOURCE
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -550,9 +553,6 @@ int serialise(char *nom_de_fichier, Arbre arbre)
 */
 
 
-/*-Wextra -finline-functions -funroll-loops*/
-/* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -Werror -finline-functions -funroll-loops -ansi -O3 test.c */
-/* valgrind --leak-check=full --show-leak-kinds=all ./main*/
 
 
 void greffe_dun_arbre(uint numero)
@@ -628,17 +628,6 @@ void greffe_dun_arbre(uint numero)
 
 
 
-/*
-int main(int argc, char *argv[])
-{
-
-    greffe_dun_arbre(4);
-
-    return 0;
-}
-*/
-
-
 
 
 
@@ -697,52 +686,28 @@ uint option_G_main(char *argv[])
 
 
 
+/* pour option -E */
 uint creer_arbre(FILE *fptr, Arbre *arbre)
 {
     char buffer[MAX_SIZE];
-    /*char buffer_tmp[CHAR_SIZE];
-    char *fin_nom = NULL;
-    uint first_time = 1;*/
     uint val = 0;
+    uint len = 0;
     if ((fscanf(fptr, "%u", &val)) <= 0) { return 0; }
 
-    if (!val) { *arbre = NULL; return 1; }
+    if ( !val ) { *arbre = NULL; return 1; }
 
-    /* Chat GPT propose cette solution: */
-    if (fscanf(fptr, "\"%[^\"]\"", buffer) <= 0) {
-        return 0;
-    }
+    if ( !fgets(buffer, MAX_SIZE, fptr) ) { return 0; }
 
-    /* prendre le nom de l'arbre */
-    /*
-    while (1) {
-        if ((fscanf(fptr, "%s", buffer_tmp)) <= 0) { return 0; }
+    len = len_string(buffer);   /* strlen() */
+    if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
 
-        if ((fin_nom = recherche_substring(buffer_tmp, "\\n"))) {  // pour supprimer \n avec guillemet (")
-            *fin_nom = '\0';
-            if (first_time) {
-                copie_chaine(buffer, buffer_tmp + 1);
-                --first_time;
-            } else {
-                concatenantion(buffer, buffer_tmp);
-            }
-            break;
-        }
-        if (first_time) {
-            copie_chaine(buffer, buffer_tmp + 1);   // pour passer le premier guillemet (") 
-            --first_time; } 
-        else {
-            concatenantion(buffer, buffer_tmp);
-        }
-        concatenantion(buffer, " ");
-    }
-    */
+    if ( !(*arbre = alloue(buffer + 1)) ) { return 0; }     /* allouer la memoire pour l'arbre */
 
-    if ( !(*arbre = alloue(buffer)) ) { return 0; }
-
-    return creer_arbre(fptr, &((*arbre)->left)) &&
-           creer_arbre(fptr, &((*arbre)->right));
+    return creer_arbre(fptr, &((*arbre)->left)) && creer_arbre(fptr, &((*arbre)->right));
 }
+
+
+
 
 
 
@@ -753,15 +718,15 @@ void option_E_main(char *path_create)
     char path_init[CHAR_SIZE];
     FILE *fptr = NULL;
 
-    fptr = fopen("exemples/clavier.saage", "r");
+    fptr = fopen("exemples/from_keyboard.txt", "r");
 
     if (!fptr) { 
-        fprintf(stderr, "l'ouverture du fichier clavier.saage mal passe\n");
+        fprintf(stderr, "l'ouverture du fichier from_keyboard.txt mal passe\n");
         return;
     }
 
     if ( !creer_arbre(fptr, &arbre_cree) ) {
-        fprintf(stderr, "la creation d'un arbre mal passe\n"); 
+        fprintf(stderr, "la creation d'un arbre a partir de usr est mal passe\n"); 
         if (arbre_cree) { liberer_arbre(&arbre_cree); }
         fclose(fptr);
         return;
@@ -806,6 +771,13 @@ void option_DOT_main(char *path_create)
 
 
 
+/*-Wextra -finline-functions -funroll-loops*/
+/* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -Werror -finline-functions -funroll-loops -ansi -O3 test.c */
+/* gcc -o main -std=c17 -pedantic -Wall -O3 test.c */
+/* valgrind --leak-check=full --show-leak-kinds=all ./main*/
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -828,8 +800,10 @@ int main(int argc, char *argv[])
             if (recherche_substring(*(argv + 1 + i), ".saage") &&
                 i + 1 < argc) {
                 char *path_create = *(argv + 1 + i);
-                if (recherche_substring( *(argv + i), "-E"))
+                if (recherche_substring( *(argv + i), "-E")){
                     option_E_main(path_create);
+                }
+
                 else
                     option_DOT_main(path_create);
 
@@ -848,3 +822,28 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
+/* POUBELLE */
+/*
+while (1) {
+    if ((fscanf(fptr, "%s", buffer_tmp)) <= 0) { return 0; }
+
+    if ((fin_nom = recherche_substring(buffer_tmp, "\\n"))) {  // pour supprimer \n avec guillemet (")
+        *fin_nom = '\0';
+        if (first_time) {
+            copie_chaine(buffer, buffer_tmp + 1);
+            --first_time;
+        } else {
+            concatenantion(buffer, buffer_tmp);
+        }
+        break;
+    }
+    if (first_time) {
+        copie_chaine(buffer, buffer_tmp + 1);   // pour passer le premier guillemet (") 
+        --first_time; } 
+    else {
+        concatenantion(buffer, buffer_tmp);
+    }
+    concatenantion(buffer, " ");
+}
+*/
