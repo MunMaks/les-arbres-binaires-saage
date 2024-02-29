@@ -80,7 +80,7 @@ void visualisation_dot(Arbre arbre)
 
 
 
-void affiche_sur_stdout(const char *path_create)
+void affiche_sur_stdout(char *path_create)
 {
     FILE *fptr_create = NULL;
     char ch;
@@ -119,7 +119,7 @@ void liberer_arbre(Arbre *arbre)
 }
 
 
-uint len_string(const char *mot)
+uint len_string( char *mot)
 {
     uint i = 0;
     while (*(mot + i)) ++i;
@@ -129,7 +129,7 @@ uint len_string(const char *mot)
 
 /*  cette fonction recherche la premiere occurrence du caractere passe
     similaire a strchr() de <string.h> */
-char *recherche_lettre(const char *source, char lettre)
+char *recherche_lettre(char *source, char lettre)
 {
     while (*source) {
         if (*source == lettre) { return (char *) source; }
@@ -141,14 +141,14 @@ char *recherche_lettre(const char *source, char lettre)
 
 /*  cette fonction recherche la premiere occurrence du substring passe
     similaire a strstr() de <string.h> */
-char* recherche_substring(const char* fullString, const char* substring)
+char* recherche_substring(char* fullString, char* substring)
 {
     if ( !*substring ) /* substring est vide */
-        return (char*) fullString;
+        return  fullString;
 
     while ( *fullString ) {
-        const char *f = fullString;
-        const char *s = substring;
+        char *f = fullString;
+        char *s = substring;
 
         /* la première occurrence de substring */
         while ( *s && *f == *s ) {
@@ -157,7 +157,7 @@ char* recherche_substring(const char* fullString, const char* substring)
         }
 
         /* si le mot est trouve */
-        if ( !*s ) { return (char*) fullString; }
+        if ( !*s ) { return fullString; }
 
         ++fullString; /* iteration */
     }
@@ -167,7 +167,7 @@ char* recherche_substring(const char* fullString, const char* substring)
 
 /*  1 si deux chaînes sont identiques
     0 sinon */
-uint comparer_chaines(const char *string_un, const char *string_deux)
+uint comparer_chaines(char *string_un, char *string_deux)
 {
     while (*string_un && *string_deux) {
         if (*string_un != *string_deux) return 0;
@@ -179,10 +179,10 @@ uint comparer_chaines(const char *string_un, const char *string_deux)
 
 
 
-char* dupliquer_string(const char *source)
+char* dupliquer_string(char *source)
 {
     char *destination = NULL, *temp_dest = NULL;
-    const char *temp_source = NULL;
+    char *temp_source = NULL;
 
     if ( !source ) return NULL;     /* source est vide */
 
@@ -201,7 +201,7 @@ char* dupliquer_string(const char *source)
 
 
 /* cette fonction copie source dans dest */
-void copie_chaine(char* dest, const char* source)
+void copie_chaine(char* dest, char* source)
 {
     while ((*dest++ = *source++)) { ; /* boucle vide */ } 
 }
@@ -217,7 +217,7 @@ void concatenantion(char* dest, char* source)
 
 
 
-Arbre alloue(const char *chaine)
+Arbre alloue (char *chaine)
 {
     Arbre noeud = malloc(sizeof *noeud);
     if ( !noeud ) return NULL;
@@ -315,7 +315,7 @@ Arbre construire_arbre(FILE *fichier)
 
 
 /* la version de la fonction deserialise() mais plus parlante */
-Arbre arbre_de_fichier(const char *path)
+Arbre arbre_de_fichier( char *path)
 {
     Arbre arbre = NULL;
     FILE *fptr = fopen(path, "r");
@@ -516,7 +516,7 @@ void write_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 
 
 /* la version de la fonction serialise() mais plus parlante */
-uint creer_fichier_saage(Arbre arbre, const char *path_create)
+uint creer_fichier_saage(Arbre arbre, char *path_create)
 {
     FILE *fptr_res = NULL;
     uint count_tab = 0;
@@ -632,33 +632,40 @@ void greffe_dun_arbre(uint numero)
 
 
 
-
+/* à tester plus tard*/
 /* valgrind ./main -G hard.saage greffe_hard.saage */
-uint option_G_main(char *argv[])
+uint option_G_main(char *path_dest, char *path_greffe)
 {
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
-    char path_init[CHAR_SIZE];
-    char path_greffe[CHAR_SIZE];
+    char buff_dest[CHAR_SIZE];
+    char buff_greffe[CHAR_SIZE];
 
 
+    if (recherche_substring(path_dest, "exemples/")) {    
+        copie_chaine(buff_dest, path_dest);
+    } else {
+        copie_chaine(buff_dest, "exemples/");
+        concatenantion(buff_dest, path_dest);
+    }
+
+    if (recherche_substring(path_greffe, "exemples/")) {    
+        copie_chaine(buff_greffe, path_greffe);
+    } else {
+        copie_chaine(buff_greffe, "exemples/");
+        concatenantion(buff_greffe, path_greffe);
+    }
+    /*
     copie_chaine(path_init, "exemples/");
     concatenantion(path_init, *(argv + 2));
     
     copie_chaine(path_greffe, "exemples/");
     concatenantion(path_greffe, *(argv + 3));
-
-    /*
-    copie_chaine(path_init, ".\\exemples\\");
-    concatenantion(path_init, *(argv + 2));
-    
-    copie_chaine(path_greffe, ".\\exemples\\");
-    concatenantion(path_greffe, *(argv + 3));
     */
-    arbre_init = arbre_de_fichier(path_init); 
+    arbre_init = arbre_de_fichier(buff_dest); 
     if (!arbre_init) { return 0; }
 
-    greffe = arbre_de_fichier(path_greffe);
+    greffe = arbre_de_fichier(buff_greffe);
     if (!greffe) { liberer_arbre(&arbre_init); return 0; }
 
 
@@ -667,10 +674,10 @@ uint option_G_main(char *argv[])
         if (greffe) { liberer_arbre(&greffe); }
         return 0;
     }
-    liberer_arbre(&greffe);
+    if (greffe) { liberer_arbre(&greffe); }
 
     path_create = "exemples/new_fichier.saage"; 
-    /*path_create = ".\\exemples\\new_fichier.saage";*/
+
     if (!creer_fichier_saage(arbre_init, path_create)) {
         remove(path_create);
         if (arbre_init) { liberer_arbre(&arbre_init); }
@@ -690,8 +697,8 @@ uint option_G_main(char *argv[])
 uint creer_arbre(FILE *fptr, Arbre *arbre)
 {
     char buffer[MAX_SIZE];
-    uint val = 0;
-    uint len = 0;
+    uint val = 0, len = 0;
+
     if ((fscanf(fptr, "%u", &val)) <= 0) { return 0; }
 
     if ( !val ) { *arbre = NULL; return 1; }
@@ -701,6 +708,7 @@ uint creer_arbre(FILE *fptr, Arbre *arbre)
     len = len_string(buffer);   /* strlen() */
     if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
 
+    /* ici buffer+1 car on veut passer premier espace*/
     if ( !(*arbre = alloue(buffer + 1)) ) { return 0; }     /* allouer la memoire pour l'arbre */
 
     return creer_arbre(fptr, &((*arbre)->left)) && creer_arbre(fptr, &((*arbre)->right));
@@ -785,11 +793,13 @@ int main(int argc, char *argv[])
     for (i = 1; i < argc; ++i) {
         /* saage -G s.saage g.saage */
         if ( recherche_substring(*(argv + i), "-G") ) {
+            char *path_dest = *(argv + 1 + i);
+            char *path_greffe = *(argv + 2 + i);
+            if (recherche_substring(path_dest, ".saage") && 
+                recherche_substring(path_greffe, ".saage") && i + 2 < argc) {
 
-            if (recherche_substring(*(argv + 1 + i), ".saage") && 
-                recherche_substring(*(argv + 2 + i), ".saage") && 
-                i + 2 < argc)
-                { option_G_main(argv); }
+                option_G_main(path_dest, path_greffe);
+            }
 
             return 0;
         }
