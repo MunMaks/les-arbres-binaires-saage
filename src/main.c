@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
             }
             return EXIT_SUCCESS;
         }
+        /* IL FAUT TESTER CELA ENCOOOOOOOORE, ne marche pas.... */
         else if (recherche_substring( *(argv + i), "-AM")) {    /* 4 pour grand, 5 pour immense*/
             printf("AMMMMMMMMMMMm\n");
             greffe_dun_arbre( (uint) 2 );    
