@@ -1,14 +1,16 @@
 #include "../include/option.h"
 
 
-/* DOT */
+/********************************************************/
+/*                                                      */
+/*                    DOT FONCTIONS                     */
+/*                                                      */
+/********************************************************/
 
 void ecrire_debut(FILE *fptr)
 {
-    fprintf(fptr, 
-        "digraph arbre {\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
+    fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
 }
-
 
 
 void ecrire_arbre(FILE *fptr, Arbre arbre)
@@ -29,16 +31,19 @@ void ecrire_arbre(FILE *fptr, Arbre arbre)
 }
 
 
+void ecrire_fin(FILE *fptr)
+{
+    fprintf(fptr, "}");
+}
 
-void ecrire_fin(FILE *fptr) { fprintf(fptr, "}"); }
 
-
-
-void dessine(FILE *fptr, Arbre arbre) {
+void dessine(FILE *fptr, Arbre arbre)
+{
     ecrire_debut(fptr);
     ecrire_arbre(fptr, arbre);
     ecrire_fin(fptr);
 }
+
 
 void visualisation_dot(Arbre arbre)
 {
@@ -55,132 +60,84 @@ void visualisation_dot(Arbre arbre)
 }
 
 
+/********************************************************/
+/*                                                      */
+/*                       OPTIONS                        */
+/*                                                      */
+/********************************************************/
 
 
-void greffe_dun_arbre(uint numero)
+/* la fonction pour option -E d'abord avec le fichier.saage et new.saage (pour créer) */
+void option_E_main(char *path_create)
 {
-    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
-    char *path_greffe = NULL, *path_res_att = NULL, *path_create = NULL;
+    Arbre arbre_cree = NULL;
+    char buff_create[CHAR_SIZE];
 
-    switch (numero) {
-        case 1:
-            arbre_init = cree_A_1();
-            path_greffe = "exemples/B.saage";
-            path_res_att = "exemples/A_1_apres_greffe_de_B.saage";
-
-            path_create = "exemples/created.saage";
-            greffe = arbre_de_fichier(path_greffe); 
-            res_attendu = arbre_de_fichier(path_res_att);
-            break;
-
-        case 2:
-            arbre_init = cree_A_2();
-            path_greffe = "exemples/C.saage";
-            path_res_att = "exemples/A_2_apres_greffe_de_C.saage";
-
-            path_create = "exemples/created.saage";
-            greffe = arbre_de_fichier(path_greffe); 
-            res_attendu = arbre_de_fichier(path_res_att);
-            break;
-
-        case 3:
-            arbre_init = cree_A_3();
-            path_greffe = "exemples/D.saage";
-            path_res_att = "exemples/A_3_apres_greffe_de_D.saage";
-
-            path_create = "exemples/created.saage";
-            greffe = arbre_de_fichier(path_greffe); 
-            res_attendu = arbre_de_fichier(path_res_att);
-            break;
-
-        case 4:
-            arbre_init = arbre_de_fichier("exemples/hard.saage");
-            path_greffe = "exemples/greffe_hard.saage";
-
-            path_create = "exemples/created.saage";
-            greffe = arbre_de_fichier(path_greffe); 
-            break;
-        case 5:
-            arbre_init = arbre_de_fichier("exemples/ultra.saage");
-            path_greffe = "exemples/greffe_hard.saage";
-
-            path_create = "exemples/created.saage";
-            greffe = arbre_de_fichier(path_greffe); 
-            break;
-        default:
-            return;
+    if ( !creer_arbre_stdin(&arbre_cree) ) {
+        fprintf(stderr, "la creation d'un arbre a partir de usr est mal passe\n"); 
+        if (arbre_cree) { liberer_arbre(&arbre_cree); }
+        return;
     }
 
-    if ( !expansion(&arbre_init, greffe) )
-        fprintf(stderr, "Expansion a rate \n");
+    path_exemples(buff_create, path_create);
 
-    if ( !creer_fichier_saage(arbre_init, path_create) ) {
-        remove(path_create);
-        fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
+    if ( !serialise(buff_create, arbre_cree) ){
+        remove(buff_create);
+        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
     }
 
-    /* Pour visualise l'arbre apres la greffe*/
-    visualisation_dot(arbre_init);
-
-    if (greffe) { liberer_arbre(&greffe); }
-    if (arbre_init) { liberer_arbre(&arbre_init); }
-    if (res_attendu) { liberer_arbre(&res_attendu); }
+    if (arbre_cree) { liberer_arbre(&arbre_cree); }
 }
 
 
-uint option_G_main(char *argv[])
+void option_G_main(char *path_dest, char *path_greffe)
 {
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
-    char path_init[CHAR_SIZE];
-    char path_greffe[CHAR_SIZE];
+    char buff_dest[CHAR_SIZE];
+    char buff_greffe[CHAR_SIZE];
 
+    path_exemples(buff_dest, path_dest);
 
-    copie_chaine(path_init, "exemples/");
-    concatenantion(path_init, *(argv + 2));
-    
-    copie_chaine(path_greffe, "exemples/");
-    concatenantion(path_greffe, *(argv + 3));
+    path_exemples(buff_greffe, path_greffe);
 
-    arbre_init = arbre_de_fichier(path_init); 
-    if (!arbre_init) { return 0; }
+    arbre_init = arbre_de_fichier(buff_dest); 
+    if (!arbre_init) { return; }
 
-    greffe = arbre_de_fichier(path_greffe);
-    if (!greffe) { liberer_arbre(&arbre_init); return 0; }
+    greffe = arbre_de_fichier(buff_greffe);
+    if (!greffe) { liberer_arbre(&arbre_init); return; }
 
 
     if ( !expansion(&arbre_init, greffe) ) {
         if (arbre_init) { liberer_arbre(&arbre_init); }
         if (greffe) { liberer_arbre(&greffe); }
-        return 0;
+        return;
     }
-    liberer_arbre(&greffe);
 
-    path_create = "exemples/new_fichier.saage"; 
-    if (!creer_fichier_saage(arbre_init, path_create)) {
+    if (greffe) { liberer_arbre(&greffe); }
+
+    path_create = "exemples/fichier_option_G.saage"; 
+
+    if ( !serialise(path_create, arbre_init) ) {
         remove(path_create);
         if (arbre_init) { liberer_arbre(&arbre_init); }
-        return 0;
+        return;
     }
 
     affiche_sur_stdout(path_create);
 
+    remove(path_create);
     if (arbre_init) { liberer_arbre(&arbre_init); }
-    return 1;
+    return;
 }
+
 
 void option_DOT_main(char *path_create)
 {
     Arbre arbre = NULL;
     char buffer[MAX_SIZE];
 
-    /* exemples/path_create */
-    if (recherche_substring(path_create, "exemples/")) {    
-        copie_chaine(buffer, path_create);
-    } else {  /* path_create */
-        copie_chaine(buffer, "exemples/");
-        concatenantion(buffer, path_create);
-    }
+    path_exemples(buffer, path_create);
 
     arbre = arbre_de_fichier(buffer);
 
@@ -192,35 +149,42 @@ void option_DOT_main(char *path_create)
 }
 
 
-
-/* la fonction pour option -E d'abord avec le fichier.saage et new.saage (pour créer) */
-void option_E_main(char *path_create)
+void greffe_dun_arbre(uint numero)
 {
-    Arbre arbre_cree = NULL;
-    char path_init[CHAR_SIZE];
-    FILE *fptr = NULL;
+    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
+    char *path_greffe = NULL, *path_create = NULL;
 
-    fptr = fopen("exemples/clavier.saage", "r");
+    switch (numero) {
+        case 1:
+            arbre_init = arbre_de_fichier("exemples/grand.saage");
+            path_greffe = "exemples/greffe_grand.saage";
 
-    if (!fptr) { 
-        fprintf(stderr, "l'ouverture du fichier clavier.saage mal passe\n");
-        return;
+            path_create = "exemples/resultat_AM.saage";
+            greffe = arbre_de_fichier(path_greffe);
+            break;
+        case 2:
+            arbre_init = arbre_de_fichier("exemples/immense.saage");
+            path_greffe = "exemples/greffe_grand.saage";
+
+            path_create = "exemples/resultat_AM.saage";
+            greffe = arbre_de_fichier(path_greffe);
+            break;
+        default:
+            return;
     }
 
-    if ( !creer_arbre(fptr, &arbre_cree) ) {
-        fprintf(stderr, "la creation d'un arbre mal passe\n"); 
-        if (arbre_cree) { liberer_arbre(&arbre_cree); }
-        fclose(fptr);
-        return;
-    }
-    fclose(fptr);
-    copie_chaine(path_init, "exemples/");
-    concatenantion(path_init, path_create);
+    if ( !expansion(&arbre_init, greffe) )
+        fprintf(stderr, "Expansion a rate \n");
 
-    if ( !creer_fichier_saage(arbre_cree, path_init) ){
-        remove(path_init);
-        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
+    if ( !serialise(path_create, arbre_init) ) {
+        remove(path_create);
+        fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
     }
 
-    if (arbre_cree) { liberer_arbre(&arbre_cree); }
+    visualisation_dot(arbre_init);
+
+    if (greffe) { liberer_arbre(&greffe); }
+    if (arbre_init) { liberer_arbre(&arbre_init); }
+    if (res_attendu) { liberer_arbre(&res_attendu); }
 }
+

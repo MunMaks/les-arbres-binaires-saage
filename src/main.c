@@ -1,42 +1,49 @@
 #include "../include/option.h"
 
 
-
 int main(int argc, char *argv[])
 {
-    uint i;
+    int i;
+    if (argc < 2) {
+        fprintf(stderr, "Pas assez de parametres dans main, veuillez reessayez\n");
+        return EXIT_SUCCESS;
+    }
+
     for (i = 1; i < argc; ++i) {
         /* saage -G s.saage g.saage */
         if ( recherche_substring(*(argv + i), "-G") ) {
 
-            if (recherche_substring(*(argv + 1 + i), ".saage") && 
-                recherche_substring(*(argv + 2 + i), ".saage") && 
-                i + 2 < argc)
-                { option_G_main(argv); }
+            if (i + 2 < argc) {
+                char *path_dest = *(argv + 1 + i);
+                char *path_greffe = *(argv + 2 + i);
+                option_G_main(path_dest, path_greffe);
+            }
 
-            return 0;
+            return EXIT_SUCCESS;
         }
-        /* -E ou -DOT option*/
+        /*
+        ./main -E new_fichier.saage < from_keyboard.txt
+        ./main -E exemples/new_fichier.saage < exemples/from_keyboard.txt
+        */
         else if (recherche_substring( *(argv + i), "-E") ||
                  recherche_substring( *(argv + i), "-DOT")) {
 
-            if (recherche_substring(*(argv + 1 + i), ".saage") &&
-                i + 1 < argc) {
+            if (i + 1 < argc) {
                 char *path_create = *(argv + 1 + i);
+
                 if (recherche_substring( *(argv + i), "-E"))
                     option_E_main(path_create);
                 else
                     option_DOT_main(path_create);
-
             }
-            return 0;
-        } else {
-            greffe_dun_arbre(5);
+            return EXIT_SUCCESS;
+        }
+        else if (recherche_substring( *(argv + i), "-AM")) {    /* 4 pour grand, 5 pour immense*/
+            printf("AMMMMMMMMMMMm\n");
+            greffe_dun_arbre( (uint) 2 );    
+            return EXIT_SUCCESS;
         }
     }
 
-    /*res_attendu = arbre_de_fichier(path_res_att);
-    printf("La meme arbre 2: %u\n", est_meme_arbre(arbre_init, res_attendu));*/
-    return 0;
+    return EXIT_SUCCESS;
 }
-

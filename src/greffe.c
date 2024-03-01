@@ -1,29 +1,7 @@
 #include "../include/greffe.h"
 
 
-/* fonction renvoie la copie de l'arbre source */
-uint copie(Arbre *dest, Arbre source)
-{
-    
-    if (!source) { *dest = NULL; return 1; }
 
-    
-    if ( !(*dest = alloue(source->nom)) ) {
-        fprintf(stderr, "Erreur d'allocation de mémoire pour la copie de l'arbre.\n");
-        return 0;
-    }
-
-
-    if ( !(copie(&((*dest)->left), source->left)) ) { return 0; }
-
-    if ( !(copie(&((*dest)->right), source->right)) ) { return 0; }
-
-    return 1;
-}
-
-
-
-/* Cette fonction ajoute left et right pour chaque feuilles de l'arbre */
 void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 {
     Arbre left_copie = NULL, right_copie = NULL;
@@ -33,7 +11,6 @@ void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
     if ((*arbre)->left) { ajoute_sous_arbres(&((*arbre)->left), left, right); }     /* si sous arbre gauche existe */
 
     if ((*arbre)->right) { ajoute_sous_arbres(&((*arbre)->right), left, right); }   /* si sous arbre droite existe */
-
 
     /* inserer les sous arbres */
     if ( !((*arbre)->left) ) { 
@@ -46,10 +23,26 @@ void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 }
 
 
-
-uint expansion(Arbre *dest, Arbre source)
+int copie(Arbre *dest, Arbre source)
 {
-    uint left = 0, right = 0;
+    if (!source) { *dest = NULL; return 1; }
+    
+    if ( !(*dest = alloue_noeud(source->nom)) ) {
+        fprintf(stderr, "Erreur d'allocation de mémoire pour la copie de l'arbre.\n");
+        return 0;
+    }
+
+    if ( !(copie(&((*dest)->left), source->left)) ) { return 0; }
+
+    if ( !(copie(&((*dest)->right), source->right)) ) { return 0; }
+
+    return 1;
+}
+
+
+int expansion(Arbre *dest, Arbre source)
+{
+    int left = 0, right = 0;
     Arbre source_copie = NULL;
     if (!source || !*dest) return 0;
 
@@ -75,4 +68,3 @@ uint expansion(Arbre *dest, Arbre source)
     }
     return left && right;
 }
-
