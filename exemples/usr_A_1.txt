@@ -1,0 +1,4 @@
+1 arbre
+1 binaire
+0 0 1 ternaire
+0 0

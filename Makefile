@@ -1,11 +1,12 @@
-CC = gcc
-CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -finline-functions -funroll-loops -ansi
+CC = gcc #clang
+CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -Werror -Wextra -finline-functions -funroll-loops -ansi
 CLIBS = 
 OPT = -O3
 
 SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = build
+EXEMPLES = exemples
 EXE = algo
 
 
@@ -30,9 +31,15 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 
-.PHONY: all clean mrproper uninstall
+ARCHIVE = MUNAIT_NAVAR
+dist: clean
+	mkdir -p $(ARCHIVE)
+	cp -R Makefile README.md $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
+	zip -r $(ARCHIVE).zip $(ARCHIVE)
+	rm -rf $(ARCHIVE)
 
-all: $(EXE)
+
+.PHONY: all clean mrproper uninstall
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -41,3 +48,4 @@ mrproper: clean
 	rm -f $(EXE)
 
 uninstall: mrproper
+	rm -f $(ARCHIVE).zip

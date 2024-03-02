@@ -64,6 +64,8 @@ void dessine(FILE *fptr, Arbre arbre)
 void visualisation_dot(Arbre arbre)
 {
     FILE *fptr = NULL;
+    if (!arbre) { return; }
+
     fptr = fopen("exemples/visualise.dot", "w");
 
     if (!fptr) { printf("Erreur à l'ouverture du fichier visualise.dot"); return; }
@@ -389,18 +391,18 @@ int expansion(Arbre *dest, Arbre source)
 {
     int left = 0, right = 0;
     Arbre source_copie = NULL;
-    if (!source || !*dest) return 0;
+    if (!source || !*dest) return 1;
 
-    left = ((*dest)->left) ? expansion(&((*dest)->left), source) : 1;
+    left = expansion(&((*dest)->left), source);
 
-    right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 1;
+    right = expansion(&((*dest)->right), source);
 
     if ( comparer_chaines((*dest)->nom, source->nom) ) {
-        
+
         if ( !copie(&source_copie, source) ) { return 0; }
 
         /* On effectue l'ajout des sous arbres de *dest a copie de source */
-        if (!source_copie) {
+        if ( !source_copie ) {
             fprintf(stderr, "On n'a pas droit d'ajouter, pas assez de memoire\n");
             return 0;
         }
@@ -410,6 +412,7 @@ int expansion(Arbre *dest, Arbre source)
         liberer_arbre(dest);    /* liberer toute la memoire de *dest car on va la remplacer */
 
         *dest = source_copie;
+        return 1;
     }
     return left && right;
 }
@@ -438,7 +441,7 @@ uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
 /* modifie */
 void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 {
-    if (!arbre) { return; }
+    if ( !arbre ) { return; }
 
     /* les valeurs */
     ajout_tabulation(fptr, count_tab);
@@ -462,10 +465,10 @@ int serialise(char *path_create, Arbre arbre)
 {
     FILE *fptr_res = NULL;
     uint count_tab = 0;
-    if (!arbre) { return 0; }   /* Arbre est NULL, rien a faire*/
+    if ( !arbre ) { return 0; }   /* Arbre est NULL, rien a faire*/
 
     fptr_res = fopen(path_create, "w");
-    if (!fptr_res) {
+    if ( !fptr_res ) {
         fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create, strerror(errno));
         return 0;
     }
@@ -476,25 +479,52 @@ int serialise(char *path_create, Arbre arbre)
 }
 
 
-/* à tester plus tard*/
+
+void greffe_dun_arbre(char *path)
+{
+    Arbre arbre_init = NULL, greffe = NULL;
+    char *path_greffe = NULL, *path_create = NULL;
+    char buffer[MAX_SIZE];
+
+    path_exemples(buffer, path);
+
+    arbre_init = arbre_de_fichier(buffer);
+    path_greffe = "exemples/greffe_grand.saage";
+    path_create = "exemples/resultat_BIG.saage";
+
+    greffe = arbre_de_fichier(path_greffe);
+    if ( !expansion(&arbre_init, greffe) )
+        fprintf(stderr, "Expansion a rate \n");
+
+    if ( !serialise(path_create, arbre_init) ) {
+        remove(path_create);
+        fprintf(stderr, "N'a pas reussi a creer %s\n", path_create);
+    }
+
+    visualisation_dot(arbre_init);
+
+    if (greffe) { liberer_arbre(&greffe); }
+    if (arbre_init) { liberer_arbre(&arbre_init); }
+}
+
+
+
+/* MODIFIÉ */
 /* valgrind ./main -G hard.saage greffe_hard.saage */
 void option_G_main(char *path_dest, char *path_greffe)
 {
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
-    char buff_dest[CHAR_SIZE];
-    char buff_greffe[CHAR_SIZE];
+    char buff_dest[CHAR_SIZE], buff_greffe[CHAR_SIZE];
 
     path_exemples(buff_dest, path_dest);
-
     path_exemples(buff_greffe, path_greffe);
 
     arbre_init = arbre_de_fichier(buff_dest); 
-    if (!arbre_init) { return; }
+    if ( !arbre_init ) { return; }
 
     greffe = arbre_de_fichier(buff_greffe);
-    if (!greffe) { liberer_arbre(&arbre_init); return; }
-
+    if ( !greffe ) { liberer_arbre(&arbre_init); return; }
 
     if ( !expansion(&arbre_init, greffe) ) {
         if (arbre_init) { liberer_arbre(&arbre_init); }
@@ -506,17 +536,12 @@ void option_G_main(char *path_dest, char *path_greffe)
 
     path_create = "exemples/fichier_option_G.saage"; 
 
-    if ( !serialise(path_create, arbre_init) ) {
-        remove(path_create);
-        if (arbre_init) { liberer_arbre(&arbre_init); }
-        return;
+    if ( serialise(path_create, arbre_init) ) {
+        affiche_sur_stdout(path_create);
     }
-
-    affiche_sur_stdout(path_create);
 
     remove(path_create);
     if (arbre_init) { liberer_arbre(&arbre_init); }
-    return;
 }
 
 
@@ -531,13 +556,13 @@ uint creer_arbre_stdin(Arbre *arbre)
 
     if ( !val ) { *arbre = NULL; return 1; }
 
-    if (!fgets(buffer, MAX_SIZE, stdin)) { return 0; }
+    if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
 
     len = len_string(buffer);   /* strlen() */
     if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
 
     /* ici buffer+1 car on veut passer premier espace*/
-    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }     /* allouer la memoire pour l'arbre */
+    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
 
     return creer_arbre_stdin(&((*arbre)->left)) && creer_arbre_stdin(&((*arbre)->right));
 }
@@ -552,17 +577,13 @@ void option_E_main(char *path_create)
     char buff_create[CHAR_SIZE];
 
     if ( !creer_arbre_stdin(&arbre_cree) ) {
-        fprintf(stderr, "la creation d'un arbre a partir de usr est mal passe\n"); 
+        fprintf(stderr, "la creation d'un arbre a partir de fichier usr est mal passe\n"); 
         if (arbre_cree) { liberer_arbre(&arbre_cree); }
         return;
     }
     path_exemples(buff_create, path_create);
 
-
-    if ( !serialise(buff_create, arbre_cree) ){
-        remove(buff_create);
-        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
-    }
+    if ( !serialise(buff_create, arbre_cree) ){ remove(buff_create); }
 
     if (arbre_cree) { liberer_arbre(&arbre_cree); }
 }
@@ -585,61 +606,77 @@ void option_DOT_main(char *path_create)
     }
 }
 
+/* clang -std=c17 -pedantic -Wall -O2 tests_prof.o build/arbres_binaires.o build/greffe.o build/saage.o build/option.o -o tests_prof */
 
-
-/* clang -std=c17 -pedantic -Wall -O2 tests_prof.o arbres_binaires.o greffe.o saage.o -o tests_prof */
 /* gcc -o main -std=c17 -pedantic -Wall -Wfatal-errors -Werror -Wextra -finline-functions -funroll-loops -ansi -O3 test.c */
 /* gcc -o main -std=c17 -pedantic -Wall -O3 test.c */
 /* valgrind --leak-check=full --show-leak-kinds=all ./main*/
 
+
+/*
+Soit i = {1, 2, 3}, X = {B, C, D}
+Usage d'option -G avec ou sans "exemples/"
+valgrind ./algo -G A_i.saage X.saage
+valgrind ./algo -G exemples/A_i.saage exemples/X.saage
+*/
+
+/*
+Soit i = {1, 2, 3}
+Usage d'option -E avec ou sans "exemples/"
+
+l'entree stadart de l'utilisateur d'apres exemples/usr_A_i.txt
+valgrind ./algo -E exemples/new_fichier.saage < exemples/usr_A_i.txt
+
+l'entree standart de l'utilisateur d'apres clavier:
+valgrind ./algo -E new_fichier.saage
+*/
+
+/*
+Usage d'option -DOT
+valgrind ./algo -DOT fichier.saage
+valgrind ./algo -DOT exemples/fichier.saage
+*/
+
+/*
+Usage d'option BIG avec ou sans "exemples/"
+valgrind ./algo -BIG exemples/grand.saage
+valgrind ./algo -BIG immense.saage 
+*/
+
 int main(int argc, char *argv[])
 {
-    int i;
+    int i = 0;
+    char *path_create = NULL;
     if (argc < 2) {
         fprintf(stderr, "Pas assez de parametres dans main, veuillez reessayez\n");
         return EXIT_SUCCESS;
     }
-
     for (i = 1; i < argc; ++i) {
-        /* saage -G s.saage g.saage */
-        if ( recherche_substring(*(argv + i), "-G") ) {
-
-            if (i + 2 < argc) {
-                char *path_dest = *(argv + 1 + i);
-                char *path_greffe = *(argv + 2 + i);
-                option_G_main(path_dest, path_greffe);
-            }
-
+        if (    (i + 2 < argc) &&
+                recherche_substring(*(argv + i), "-G") ) {
+            option_G_main(*(argv + 1 + i), *(argv + 2 + i));
             return EXIT_SUCCESS;
         }
-        /*
-        ./main -E new_fichier.saage < from_keyboard.txt
-        ./main -E exemples/new_fichier.saage < exemples/from_keyboard.txt
-        */
-        else if (recherche_substring( *(argv + i), "-E") ||
-                 recherche_substring( *(argv + i), "-DOT")) {
+        else if (   (i + 1 < argc) &&
+                    (recherche_substring( *(argv + i), "-E") ||
+                    recherche_substring( *(argv + i), "-DOT")) ) {
+            path_create = *(argv + 1 + i);
 
-            if (i + 1 < argc) {
-                char *path_create = *(argv + 1 + i);
-
-                if (recherche_substring( *(argv + i), "-E"))
-                    option_E_main(path_create);
-                else
-                    option_DOT_main(path_create);
-            }
+            if (recherche_substring( *(argv + i), "-E"))
+                option_E_main(path_create);
+            else
+                option_DOT_main(path_create);
             return EXIT_SUCCESS;
         }
-        /* 1 pour A_1, 2 pour A_2 et 3 pour A_3, 4 ou 5 sont grands*/
-        
-        /*else if (recherche_substring( *(argv + i), "-4")) {
-            greffe_dun_arbre(5);    
+        else if (   (i + 1 < argc) &&
+                    recherche_substring( *(argv + i), "-BIG") ) {
+            path_create = *(argv + 1 + i);
+            greffe_dun_arbre(path_create);    
             return EXIT_SUCCESS;
-        }*/
+        }
     }
-
     return EXIT_SUCCESS;
 }
-
 
 
 /* l'ajout BFS dans l'arbre binaire 

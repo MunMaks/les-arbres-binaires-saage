@@ -16,7 +16,7 @@ extern void visualisation_dot(Arbre arbre);
 extern void option_E_main(char *path_create);
 extern void option_G_main(char *path_dest, char *path_greffe);
 extern void option_DOT_main(char *path_create);
-extern void greffe_dun_arbre(uint numero);
+extern void greffe_dun_arbre(char *path);
 
 
 

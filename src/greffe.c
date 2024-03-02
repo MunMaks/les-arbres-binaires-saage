@@ -44,18 +44,18 @@ int expansion(Arbre *dest, Arbre source)
 {
     int left = 0, right = 0;
     Arbre source_copie = NULL;
-    if (!source || !*dest) return 0;
+    if (!source || !*dest) return 1;
 
-    left = ((*dest)->left) ? expansion(&((*dest)->left), source) : 1;
+    left = expansion(&((*dest)->left), source);
 
-    right = ((*dest)->right) ? expansion(&((*dest)->right), source) : 1;
+    right = expansion(&((*dest)->right), source);
 
     if ( comparer_chaines((*dest)->nom, source->nom) ) {
-        
+
         if ( !copie(&source_copie, source) ) { return 0; }
 
         /* On effectue l'ajout des sous arbres de *dest a copie de source */
-        if (!source_copie) {
+        if ( !source_copie ) {
             fprintf(stderr, "On n'a pas droit d'ajouter, pas assez de memoire\n");
             return 0;
         }
@@ -65,6 +65,7 @@ int expansion(Arbre *dest, Arbre source)
         liberer_arbre(dest);    /* liberer toute la memoire de *dest car on va la remplacer */
 
         *dest = source_copie;
+        return 1;
     }
     return left && right;
 }

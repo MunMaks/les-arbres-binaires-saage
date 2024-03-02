@@ -200,12 +200,12 @@ Arbre arbre_de_fichier(char *path)
     Arbre arbre = NULL;
     FILE *fptr = fopen(path, "r");
     if (!fptr) {
-        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path, strerror(errno));
+        fprintf(stderr, "Erreur d'ouverture de %s: %s\n", path, strerror(errno));
         return NULL;
     }
-    if ( !construire_arbre(fptr, &arbre)) {
+    if ( !construire_arbre(fptr, &arbre) ) {
+        fprintf(stderr, "Construction a mal passe, veuillez reessayer\n");
         if (arbre) {
-            fprintf(stderr, "Construction a mal passe, veuillez reessayer\n");
             liberer_arbre(&arbre);
             arbre = NULL;
         }
@@ -227,6 +227,7 @@ uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux) {
 
 
 
+/* pour option -E */
 uint creer_arbre_stdin(Arbre *arbre)
 {
     char buffer[MAX_SIZE];
@@ -236,17 +237,16 @@ uint creer_arbre_stdin(Arbre *arbre)
 
     if ( !val ) { *arbre = NULL; return 1; }
 
-    if (!fgets(buffer, MAX_SIZE, stdin)) { return 0; }
+    if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
 
     len = len_string(buffer);   /* strlen() */
     if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
 
     /* ici buffer+1 car on veut passer premier espace*/
-    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }     /* allouer la memoire pour l'arbre */
+    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
 
     return creer_arbre_stdin(&((*arbre)->left)) && creer_arbre_stdin(&((*arbre)->right));
 }
-
 
 
 void affiche_sur_stdout(char *path_create)
@@ -270,9 +270,7 @@ void affiche_sur_stdout(char *path_create)
 
 Arbre cree_A_1(void)
 {
-    Arbre arbre = NULL;
-    char *path = "exemples/A_1.saage";
-    arbre = arbre_de_fichier(path);
+    Arbre arbre = arbre_de_fichier("exemples/A_1.saage");
     return arbre;
 }
 
@@ -280,17 +278,14 @@ Arbre cree_A_1(void)
 
 Arbre cree_A_2(void)
 {
-    Arbre arbre = NULL;
-    char *path = "exemples/A_2.saage";
-    arbre = arbre_de_fichier(path);
+    Arbre arbre = arbre_de_fichier("exemples/A_2.saage");
     return arbre;
 }
 
 
 Arbre cree_A_3(void)
 {
-    Arbre arbre = NULL;
-    char *path = "exemples/A_3.saage";
-    arbre = arbre_de_fichier(path);
+    Arbre arbre = arbre_de_fichier("exemples/A_3.saage");;
+
     return arbre;
 }

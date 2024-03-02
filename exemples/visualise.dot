@@ -2,15 +2,19 @@ digraph arbre{
 	node [ shape = record, height = .1]
 	edge [ tailclip = false , arrowtail = dot, dir = both];
 
-	n0x4a5b2a0 [label="<gauche> | <valeur> Intel Core i9 | <droit>"];
+	n0x4a5b2a0 [label="<gauche> | <valeur> COBOL | <droit>"];
 	n0x4a5b2a0:gauche:c -> n0x4a5b350:valeur;
-	n0x4a5b350 [label="<gauche> | <valeur> Apple M3 Max | <droit>"];
-	n0x4a5b350:droit:c -> n0x4a5b400:valeur;
-	n0x4a5b400 [label="<gauche> | <valeur> AMD Ryzen 9 | <droit>"];
+	n0x4a5b350 [label="<gauche> | <valeur> COBOL | <droit>"];
+	n0x4a5b350:gauche:c -> n0x4a5b400:valeur;
+	n0x4a5b400 [label="<gauche> | <valeur> COBOL | <droit>"];
 	n0x4a5b400:gauche:c -> n0x4a5b4b0:valeur;
-	n0x4a5b4b0 [label="<gauche> | <valeur> Intel Core i9 | <droit>"];
-	n0x4a5b2a0:droit:c -> n0x4a5b560:valeur;
-	n0x4a5b560 [label="<gauche> | <valeur> Intel Core i9 | <droit>"];
-	n0x4a5b560:gauche:c -> n0x4a5b610:valeur;
-	n0x4a5b610 [label="<gauche> | <valeur> Intel Core i9 | <droit>"];
+	n0x4a5b4b0 [label="<gauche> | <valeur> COBOL | <droit>"];
+	n0x4a5b350:droit:c -> n0x4a5b560:valeur;
+	n0x4a5b560 [label="<gauche> | <valeur> COBOL | <droit>"];
+	n0x4a5b2a0:droit:c -> n0x4a5b610:valeur;
+	n0x4a5b610 [label="<gauche> | <valeur> COBOL | <droit>"];
+	n0x4a5b610:gauche:c -> n0x4a5b6c0:valeur;
+	n0x4a5b6c0 [label="<gauche> | <valeur> COBOL | <droit>"];
+	n0x4a5b610:droit:c -> n0x4a5b770:valeur;
+	n0x4a5b770 [label="<gauche> | <valeur> COBOL | <droit>"];
 }

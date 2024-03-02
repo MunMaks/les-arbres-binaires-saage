@@ -3,7 +3,7 @@
 
 /********************************************************/
 /*                                                      */
-/*                    DOT FONCTIONS                     */
+/*                    FONCTIONS DOT                     */
 /*                                                      */
 /********************************************************/
 
@@ -46,8 +46,10 @@ void dessine(FILE *fptr, Arbre arbre)
 
 
 void visualisation_dot(Arbre arbre)
-{
+{    
     FILE *fptr = NULL;
+    if (!arbre) { return; }
+
     fptr = fopen("exemples/visualise.dot", "w");
 
     if (!fptr) { printf("Erreur à l'ouverture du fichier visualise.dot"); return; }
@@ -74,17 +76,13 @@ void option_E_main(char *path_create)
     char buff_create[CHAR_SIZE];
 
     if ( !creer_arbre_stdin(&arbre_cree) ) {
-        fprintf(stderr, "la creation d'un arbre a partir de usr est mal passe\n"); 
+        fprintf(stderr, "la creation d'un arbre a partir de fichier usr est mal passe\n"); 
         if (arbre_cree) { liberer_arbre(&arbre_cree); }
         return;
     }
-
     path_exemples(buff_create, path_create);
 
-    if ( !serialise(buff_create, arbre_cree) ){
-        remove(buff_create);
-        if (arbre_cree) { liberer_arbre(&arbre_cree); return; }
-    }
+    if ( !serialise(buff_create, arbre_cree) ){ remove(buff_create); }
 
     if (arbre_cree) { liberer_arbre(&arbre_cree); }
 }
@@ -94,19 +92,16 @@ void option_G_main(char *path_dest, char *path_greffe)
 {
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
-    char buff_dest[CHAR_SIZE];
-    char buff_greffe[CHAR_SIZE];
+    char buff_dest[CHAR_SIZE], buff_greffe[CHAR_SIZE];
 
     path_exemples(buff_dest, path_dest);
-
     path_exemples(buff_greffe, path_greffe);
 
     arbre_init = arbre_de_fichier(buff_dest); 
-    if (!arbre_init) { return; }
+    if ( !arbre_init ) { return; }
 
     greffe = arbre_de_fichier(buff_greffe);
-    if (!greffe) { liberer_arbre(&arbre_init); return; }
-
+    if ( !greffe ) { liberer_arbre(&arbre_init); return; }
 
     if ( !expansion(&arbre_init, greffe) ) {
         if (arbre_init) { liberer_arbre(&arbre_init); }
@@ -118,18 +113,14 @@ void option_G_main(char *path_dest, char *path_greffe)
 
     path_create = "exemples/fichier_option_G.saage"; 
 
-    if ( !serialise(path_create, arbre_init) ) {
-        remove(path_create);
-        if (arbre_init) { liberer_arbre(&arbre_init); }
-        return;
+    if ( serialise(path_create, arbre_init) ) {
+        affiche_sur_stdout(path_create);
     }
-
-    affiche_sur_stdout(path_create);
 
     remove(path_create);
     if (arbre_init) { liberer_arbre(&arbre_init); }
-    return;
 }
+
 
 
 void option_DOT_main(char *path_create)
@@ -149,30 +140,20 @@ void option_DOT_main(char *path_create)
 }
 
 
-void greffe_dun_arbre(uint numero)
+
+void greffe_dun_arbre(char *path)
 {
-    Arbre arbre_init = NULL, greffe = NULL, res_attendu = NULL;
+    Arbre arbre_init = NULL, greffe = NULL;
     char *path_greffe = NULL, *path_create = NULL;
+    char buffer[MAX_SIZE];
 
-    switch (numero) {
-        case 1:
-            arbre_init = arbre_de_fichier("exemples/grand.saage");
-            path_greffe = "exemples/greffe_grand.saage";
+    path_exemples(buffer, path);
 
-            path_create = "exemples/resultat_AM.saage";
-            greffe = arbre_de_fichier(path_greffe);
-            break;
-        case 2:
-            arbre_init = arbre_de_fichier("exemples/immense.saage");
-            path_greffe = "exemples/greffe_grand.saage";
+    arbre_init = arbre_de_fichier(buffer);
+    path_greffe = "exemples/greffe_grand.saage";
+    path_create = "exemples/resultat_BIG.saage";
 
-            path_create = "exemples/resultat_AM.saage";
-            greffe = arbre_de_fichier(path_greffe);
-            break;
-        default:
-            return;
-    }
-
+    greffe = arbre_de_fichier(path_greffe);
     if ( !expansion(&arbre_init, greffe) )
         fprintf(stderr, "Expansion a rate \n");
 
@@ -185,6 +166,5 @@ void greffe_dun_arbre(uint numero)
 
     if (greffe) { liberer_arbre(&greffe); }
     if (arbre_init) { liberer_arbre(&arbre_init); }
-    if (res_attendu) { liberer_arbre(&res_attendu); }
 }
 

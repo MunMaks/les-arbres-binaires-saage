@@ -10,7 +10,7 @@ void ajout_tabulation(FILE *fptr, uint count_tab)
 
 void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 {
-    if (!arbre) { return; }
+    if ( !arbre ) { return; }
 
     /* les valeurs */
     ajout_tabulation(fptr, count_tab);
@@ -33,10 +33,10 @@ int serialise(char *path_create, Arbre arbre)
 {
     FILE *fptr_res = NULL;
     uint count_tab = 0;
-    if (!arbre) { return 0; }   /* Arbre est NULL, rien a faire*/
+    if ( !arbre ) { return 0; }   /* Arbre est NULL, rien a faire*/
 
     fptr_res = fopen(path_create, "w");
-    if (!fptr_res) {
+    if ( !fptr_res ) {
         fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create, strerror(errno));
         return 0;
     }

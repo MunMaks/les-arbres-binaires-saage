@@ -1,36 +1,63 @@
 #include "../include/option.h"
 
+/* 
+    SOIT on laisse usage ici
+    SOIT on l'ajoute dans le rapport
+*/
+
+
+/*
+Soit i = {1, 2, 3}, X = {B, C, D}
+Usage d'option -G avec ou sans "exemples/"
+valgrind ./algo -G A_i.saage X.saage
+valgrind ./algo -G exemples/A_i.saage exemples/X.saage
+*/
+
+
+/*
+Soit i = {1, 2, 3}
+Usage d'option -E avec ou sans "exemples/"
+
+l'entree stadart de l'utilisateur d'apres exemples/usr_A_i.txt
+valgrind ./algo -E exemples/new_fichier.saage < exemples/usr_A_i.txt
+
+l'entree standart de l'utilisateur d'apres clavier:
+valgrind ./algo -E new_fichier.saage
+*/
+
+
+/*
+Usage d'option -DOT
+valgrind ./algo -DOT fichier.saage
+valgrind ./algo -DOT exemples/fichier.saage
+*/
+
+
+/*
+Usage d'option BIG avec ou sans "exemples/"
+valgrind ./algo -BIG exemples/grand.saage
+valgrind ./algo -BIG immense.saage 
+*/
 
 int main(int argc, char *argv[])
 {
-    int i;
+    int i = 0;
+    char *path_create = NULL;
     if (argc < 2) {
         fprintf(stderr, "Pas assez de parametres dans main, veuillez reessayez\n");
         return EXIT_SUCCESS;
     }
-
     for (i = 1; i < argc; ++i) {
-        /* saage -G s.saage g.saage */
         if ( recherche_substring(*(argv + i), "-G") ) {
-
-            if (i + 2 < argc) {
-                char *path_dest = *(argv + 1 + i);
-                char *path_greffe = *(argv + 2 + i);
-                option_G_main(path_dest, path_greffe);
-            }
-
+            if (i + 2 < argc) 
+                option_G_main(*(argv + 1 + i), *(argv + 2 + i));
             return EXIT_SUCCESS;
         }
-        /*
-        ./main -E new_fichier.saage < from_keyboard.txt
-        ./main -E exemples/new_fichier.saage < exemples/from_keyboard.txt
-        */
+
         else if (recherche_substring( *(argv + i), "-E") ||
-                 recherche_substring( *(argv + i), "-DOT")) {
-
+                 recherche_substring( *(argv + i), "-DOT") ) {
+            path_create = *(argv + 1 + i);
             if (i + 1 < argc) {
-                char *path_create = *(argv + 1 + i);
-
                 if (recherche_substring( *(argv + i), "-E"))
                     option_E_main(path_create);
                 else
@@ -38,13 +65,13 @@ int main(int argc, char *argv[])
             }
             return EXIT_SUCCESS;
         }
-        /* IL FAUT TESTER CELA ENCOOOOOOOORE, ne marche pas.... */
-        else if (recherche_substring( *(argv + i), "-AM")) {    /* 4 pour grand, 5 pour immense*/
-            printf("AMMMMMMMMMMMm\n");
-            greffe_dun_arbre( (uint) 2 );    
+
+        else if ( recherche_substring( *(argv + i), "-BIG") &&
+                  (i + 1 < argc) ) {
+            path_create = *(argv + 1 + i);
+            greffe_dun_arbre(path_create);
             return EXIT_SUCCESS;
         }
     }
-
     return EXIT_SUCCESS;
 }

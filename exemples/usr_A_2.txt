@@ -1,0 +1,8 @@
+1 Anémone
+1 Camomille
+0 0 1 Camomille
+1 Dahlia
+0 1 Camomille
+1 Iris
+0 0 1 Jasmin
+0 0 0
