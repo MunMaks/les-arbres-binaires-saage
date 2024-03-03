@@ -52,14 +52,30 @@ void visualisation_dot(Arbre arbre)
 
     fptr = fopen("exemples/visualise.dot", "w");
 
-    if (!fptr) { fprintf(stderr, "Erreur à l'ouverture du fichier visualise.dot"); return; }
+    if (!fptr) { 
+        fprintf(stderr, "Erreur à l'ouverture du fichier visualise.dot\n"); 
+        return; 
+    }
 
-    else { dessine(fptr, arbre); }
+    dessine(fptr, arbre);
 
     fclose(fptr);
-    system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
-    system("evince exemples/visualise.pdf &");
+
+    int status = system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
+
+    if (status != 0) {
+        fprintf(stderr, "Erreur lors de la génération du fichier PDF\n");
+        return;
+    }
+
+    status = system("evince exemples/visualise.pdf &");
+
+    if (status != 0) {
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier PDF\n");
+        return;
+    }
 }
+
 
 
 /********************************************************/
