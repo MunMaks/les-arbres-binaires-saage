@@ -21,16 +21,31 @@ The program can be used with different options to perform specific operations on
 ### Usage Examples:
 
 ```
-./algo -G A_1.saage X.saage
+i = {1, 2, 3}, X = {B, C, D}
+./algo -G A_i.saage X.saage
 ./algo -E new_file.saage < user_input.txt
+./algo -E new_file.saage (input in format *)
 ./algo -DOT file.saage
 ./algo -BIG grand.saage
+```
+Input in format *
+```
+1 root
+1 subTreeLeft
+0 0 1 subTreeRight
+0 0
+/*
+It means Inorder traversal 1 node exists and 0 don't
+In this case root has two child subTreeLeft and subTreeRight
+But "0" means child left or right is NULL so we switch to subTreeRight and doing the same. 
+*/
 ```
 
 
 ## Requirements
 
 - Linux Environment
+- DOT Language "https://en.wikipedia.org/wiki/DOT_(graph_description_language)"
 - Valgrind installed
 
 
