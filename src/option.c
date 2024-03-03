@@ -48,6 +48,7 @@ void dessine(FILE *fptr, Arbre arbre)
 void visualisation_dot(Arbre arbre)
 {    
     FILE *fptr = NULL;
+    int status = 0;
     if (!arbre) { return; }
 
     fptr = fopen("exemples/visualise.dot", "w");
@@ -61,16 +62,16 @@ void visualisation_dot(Arbre arbre)
 
     fclose(fptr);
 
-    int status = system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
+    status = system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
 
-    if (status != 0) {
+    if (status) {
         fprintf(stderr, "Erreur lors de la génération du fichier PDF\n");
         return;
     }
 
     status = system("evince exemples/visualise.pdf &");
 
-    if (status != 0) {
+    if (status) {
         fprintf(stderr, "Erreur lors de l'ouverture du fichier PDF\n");
         return;
     }
@@ -85,7 +86,6 @@ void visualisation_dot(Arbre arbre)
 /********************************************************/
 
 
-/* la fonction pour option -E d'abord avec le fichier.saage et new.saage (pour créer) */
 void option_E_main(char *path_create)
 {
     Arbre arbre_cree = NULL;
@@ -183,4 +183,3 @@ void greffe_dun_arbre(char *path)
     if (greffe) { liberer_arbre(&greffe); }
     if (arbre_init) { liberer_arbre(&arbre_init); }
 }
-
