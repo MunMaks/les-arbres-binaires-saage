@@ -1,4 +1,4 @@
-CC = gcc #clang
+CC = gcc
 CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -Werror -Wextra -finline-functions -funroll-loops -ansi
 CLIBS = 
 OPT = -O3
