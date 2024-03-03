@@ -52,7 +52,7 @@ void visualisation_dot(Arbre arbre)
 
     fptr = fopen("exemples/visualise.dot", "w");
 
-    if (!fptr) { printf("Erreur à l'ouverture du fichier visualise.dot"); return; }
+    if (!fptr) { fprintf(stderr, "Erreur à l'ouverture du fichier visualise.dot"); return; }
 
     else { dessine(fptr, arbre); }
 

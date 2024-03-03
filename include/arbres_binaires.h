@@ -28,31 +28,49 @@ typedef struct _noeud {
 } Noeud, *Arbre;
 
 
-
 /********************************************************/
 /*                                                      */
 /*                       STRINGS                        */
 /*                                                      */
 /********************************************************/
 
+
 extern uint len_string(char *mot);
 
+/**
+ * @brief Cherche une lettre dans source
+ * @return le pointeur sur ce lettre dans source (NULL sinon)
+ */
 extern char *recherche_lettre(char *source, char lettre);
 
+/**
+ * @brief Cherche une chaine de caractere dans source
+ * @return le pointeur sur la premier occurrence dans source (NULL sinon)
+ */
 extern char *recherche_substring(char* nom_complet, char* substring);
 
+/**
+ * @return 1 si deux chaines sont identiques et 0 sinon
+*/
 extern uint comparer_chaines(char *chaine_un, char *chaine_deux);
 
+/**
+ * @return renvoie la copie de la source (en utilisant malloc)
+*/
 extern char *dupliquer_nom(char *source);
 
-/* cette fonction copie source dans dest */
+/**
+ * @brief cette fonction copie source dans dest 
+*/
 extern void copie_chaine(char* dest, char* source);
 
-/* cette fonction concatene destination et source */
+/**
+ * @brief cette fonction concatene destination et source
+*/
 extern void concatenantion(char* dest, char* source);
 
-/*  
-    Cette fonction copie l'adresse de path 
+/**
+ * @brief Cette fonction copie l'adresse de path 
     et ajoute "exemples/" au debut de buffer
     si cela n'existe pas deja la bas
 */
@@ -71,18 +89,36 @@ extern Noeud *alloue_noeud(char *chaine);
 
 extern void liberer_arbre(Arbre *arbre);
 
+/**
+ * @brief constuire arbre d'apres le fichier .saage
+ * @return 1 si tout va bien et 0 sinon 
+*/
 extern int construire_arbre(FILE *fptr, Arbre *arbre);
 
+/**
+ * @brief renvoie l'arbre deja construit d'apres le chemin pour fichier .saage 
+ * @return le pointeur Arbre si tout va bien et NULL sinon 
+*/
 extern Arbre arbre_de_fichier(char *path);
 
+/**
+ * @brief verifie si deux arbres sont identiques 
+ * @return 1 si tout va bien et 0 sinon  
+*/
 extern uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux);
 
-
+/**
+ * @brief dans DM on l'appelle constuire_arbre()
+ * le nom nous dit que c'est la lecture d'un fichier .saage
+ * a partir de l'entree standart (stdin) 
+ * @return 1 si tout va bien et 0 sinon  
+*/
 extern uint creer_arbre_stdin(Arbre *arbre);
+
 extern void affiche_sur_stdout(char *path_create);
 
 
-/* Des exemples */
+/* Des exemples pour construire A_i.saage  */
 extern Arbre cree_A_1(void);
 extern Arbre cree_A_2(void);
 extern Arbre cree_A_3(void);
