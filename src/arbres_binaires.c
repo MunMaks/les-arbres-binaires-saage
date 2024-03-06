@@ -8,17 +8,18 @@
 /********************************************************/
 
 
+/* (const char *mot) */
 uint len_string(char *mot)
 {
     uint i = 0;
-    while (*(mot + i)) ++i;
-    return i; 
+    while (*mot++) ++i;     /* (mot[i] != '\0') */
+    return i;
 }
 
 
 /*  cette fonction recherche la premiere occurrence du caractere passe
     similaire a strchr() de <string.h> */
-char *recherche_lettre(char *source, char lettre)
+static char *recherche_lettre(char *source, char lettre)
 {
     while (*source) {
         if (*source == lettre) { return source; }
@@ -30,23 +31,24 @@ char *recherche_lettre(char *source, char lettre)
 
 /*  cette fonction recherche la premiere occurrence du substring passe
     similaire a strstr() de <string.h> */
+/* on peut utiliser (static char *) */
 char *recherche_substring(char* nom_complet, char* substring)
 {
-    char *f = NULL, *s = NULL;
+    char *chaine = NULL, *sous_chaine = NULL;
     if ( !*substring ) /* substring est vide */
         return nom_complet;
 
     while ( *nom_complet ) {
-        f = nom_complet;
-        s = substring;
+        chaine = nom_complet;
+        sous_chaine = substring;
 
         /* la première occurrence de substring */
-        while ( *s && *f == *s ) {
-            f++;
-            s++;
+        while ( *sous_chaine && (*chaine == *sous_chaine) ) {
+            chaine++;
+            sous_chaine++;
         }
 
-        if ( !*s ) { return nom_complet; }   /* si le mot est trouve */
+        if ( !(*sous_chaine) ) { return nom_complet; }   /* si le mot est trouve */
 
         ++nom_complet;
     }
@@ -63,12 +65,12 @@ uint comparer_chaines(char *chaine_un, char *chaine_deux)
         ++chaine_un;
         ++chaine_deux;
     }
-    return (!*chaine_un && !*chaine_deux) ? (1) : (0);
+    return ( !(*chaine_un) && !(*chaine_deux) ) ? (1) : (0);
 }
 
 
 
-char *dupliquer_nom(char *source)
+static char *dupliquer_nom(char *source)
 {
     char *destination = NULL, *temp_dest = NULL, *temp_source = NULL;
 
@@ -88,24 +90,24 @@ char *dupliquer_nom(char *source)
 }
 
 
-void copie_chaine(char* dest, char* source)
+static void copie_chaine(char* dest, char* source)
 {
-    if (!source) { return; }
-    while ((*dest++ = *source++)) { ; /* boucle vide */ } 
+    if ( !source ) { return; }
+    while ( (*dest++ = *source++) ) { ; /* boucle vide */ } 
 }
 
 
-void concatenantion(char* dest, char* source)
+static void concatenantion(char* dest, char* source)
 {
-    if (!source) { return; }
-    while (*dest) { dest++; }
+    if ( !source ) { return; }
+    while ( *dest ) { dest++; }
     copie_chaine(dest, source);
 }
 
 
 void path_exemples(char *buffer, char *path)
 {
-    if (!path) return;
+    if ( !path ) return;
 
     if (recherche_substring(path, "exemples/")) {
         copie_chaine(buffer, path);
@@ -140,18 +142,22 @@ Noeud *alloue_noeud(char *chaine)
 
 void liberer_arbre(Arbre *arbre)
 {
-    if (!*arbre) { return ; }
+    if ( !*arbre ) { return; }
 
-    if ((*arbre)->left) { liberer_arbre(&((*arbre)->left)); }
+    if ( (*arbre)->left ) { liberer_arbre(&((*arbre)->left)); }
 
-    if ((*arbre)->right) { liberer_arbre(&((*arbre)->right)); }
+    if ( (*arbre)->right ) { liberer_arbre(&((*arbre)->right)); }
 
     /* suppression du noeud et son nom */
-    if (*arbre) { if ((*arbre)->nom) { free((*arbre)->nom); } free(*arbre); }
+    if ( *arbre ) { 
+        if ( (*arbre)->nom ) { free((*arbre)->nom); } 
+        free(*arbre);
+        *arbre = NULL;
+    }
 }
 
 
-int construire_arbre(FILE *fptr, Arbre *arbre)
+static int arbre_de_fichier_aux(FILE *fptr, Arbre *arbre)
 {
     int left = 0, right = 0;
     char buffer[MAX_SIZE];
@@ -162,14 +168,14 @@ int construire_arbre(FILE *fptr, Arbre *arbre)
     if ( !fgets(buffer, MAX_SIZE, fptr) ) { return 0; }
 
     nom_noeud = recherche_lettre(buffer, ':');
-    if (!nom_noeud) { return 0; }
+    if ( !nom_noeud ) { return 0; }
     nom_noeud += 2;   /* passer ': ' */
 
     fin_nom_noeud = recherche_lettre(nom_noeud, '\n');
-    if (!fin_nom_noeud) { return 0; }
+    if ( !fin_nom_noeud ) { return 0; }
     *fin_nom_noeud = '\0';
 
-    if (!(*arbre = alloue_noeud(nom_noeud))) { return 0; }
+    if ( !(*arbre = alloue_noeud(nom_noeud)) ) { return 0; }
 
 
     /* les sous-arbres gauches */
@@ -178,7 +184,7 @@ int construire_arbre(FILE *fptr, Arbre *arbre)
     if ( recherche_substring(buffer, "Gauche :") ) {
 
         if ( recherche_substring(buffer, "NULL") ) { (*arbre)->left = NULL; left = 1; }
-        else { left = construire_arbre(fptr, &((*arbre)->left)); }
+        else { left = arbre_de_fichier_aux(fptr, &((*arbre)->left)); }
     }
 
 
@@ -188,7 +194,7 @@ int construire_arbre(FILE *fptr, Arbre *arbre)
     if ( recherche_substring(buffer, "Droite :") ) {
 
         if ( recherche_substring(buffer, "NULL") ) { (*arbre)->right = NULL; right = 1; }
-        else { right = construire_arbre(fptr, &((*arbre)->right)); }
+        else { right = arbre_de_fichier_aux(fptr, &((*arbre)->right)); }
     }
 
     return left && right;
@@ -199,11 +205,11 @@ Arbre arbre_de_fichier(char *path)
 {
     Arbre arbre = NULL;
     FILE *fptr = fopen(path, "r");
-    if (!fptr) {
+    if ( !fptr ) {
         fprintf(stderr, "Erreur d'ouverture de %s: %s\n", path, strerror(errno));
         return NULL;
     }
-    if ( !construire_arbre(fptr, &arbre) ) {
+    if ( !arbre_de_fichier_aux(fptr, &arbre) ) {
         fprintf(stderr, "Construction a mal passe, veuillez reessayer\n");
         if (arbre) {
             liberer_arbre(&arbre);
@@ -215,7 +221,8 @@ Arbre arbre_de_fichier(char *path)
 }
 
 
-uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux) {
+uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
+{
     if ( !arbre_un && !arbre_deux ) return 1;
     else if ( !arbre_un  || !arbre_deux ) return 0;
 
@@ -224,46 +231,6 @@ uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux) {
              est_meme_arbre(arbre_un->right, arbre_deux->right));
 }
 
-
-
-
-/* pour option -E */
-uint creer_arbre_stdin(Arbre *arbre)
-{
-    char buffer[MAX_SIZE];
-    uint val = 0, len = 0;
-
-    if ((scanf("%u", &val)) <= 0) { return 0; }
-
-    if ( !val ) { *arbre = NULL; return 1; }
-
-    if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
-
-    len = len_string(buffer);   /* strlen() */
-    if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
-
-    /* ici buffer+1 car on veut passer premier espace*/
-    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
-
-    return creer_arbre_stdin(&((*arbre)->left)) && creer_arbre_stdin(&((*arbre)->right));
-}
-
-
-void affiche_sur_stdout(char *path_create)
-{
-    FILE *fptr = NULL;
-    char buffer[MAX_SIZE];
-    fptr = fopen(path_create, "r");
-
-    if (!fptr) { 
-        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create, strerror(errno));
-        return;
-    }
-
-    while (fgets(buffer, MAX_SIZE, fptr)) { fputs(buffer, stdout); }
-
-    fclose(fptr);
-}
 
 
 

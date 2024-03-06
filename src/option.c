@@ -85,6 +85,32 @@ void visualisation_dot(Arbre arbre)
 /*                                                      */
 /********************************************************/
 
+/**
+ * @brief dans DM on l'appelle constuire_arbre()
+ * le nom nous dit que c'est la lecture d'un fichier .saage
+ * a partir de l'entree standart (stdin) 
+ * @return 1 si tout va bien et 0 sinon  
+*/
+static uint creer_arbre_stdin(Arbre *arbre)
+{
+    char buffer[MAX_SIZE];
+    uint val = 0, len = 0;
+
+    if ((scanf("%u", &val)) <= 0) { return 0; }
+
+    if ( !val ) { *arbre = NULL; return 1; }
+
+    if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
+
+    len = len_string(buffer);   /* strlen() */
+    if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
+
+    /* ici buffer+1 car on veut passer premier espace*/
+    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
+
+    return creer_arbre_stdin(&((*arbre)->left)) && creer_arbre_stdin(&((*arbre)->right));
+}
+
 
 void option_E_main(char *path_create)
 {
@@ -101,6 +127,25 @@ void option_E_main(char *path_create)
     if ( !serialise(buff_create, arbre_cree) ){ remove(buff_create); }
 
     if (arbre_cree) { liberer_arbre(&arbre_cree); }
+}
+
+
+
+
+static void affiche_sur_stdout(char *path_create)
+{
+    FILE *fptr = NULL;
+    char buffer[MAX_SIZE];
+    fptr = fopen(path_create, "r");
+
+    if (!fptr) { 
+        fprintf(stderr, "Erreur d'ouverture du %s: %s\n", path_create, strerror(errno));
+        return;
+    }
+
+    while (fgets(buffer, MAX_SIZE, fptr)) { fputs(buffer, stdout); }
+
+    fclose(fptr);
 }
 
 

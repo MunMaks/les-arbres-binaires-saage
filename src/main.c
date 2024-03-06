@@ -48,16 +48,17 @@ int main(int argc, char *argv[])
         return EXIT_SUCCESS;
     }
     for (i = 1; i < argc; ++i) {
-        if ( recherche_substring(*(argv + i), "-G") ) {
+        if ( recherche_substring(*(argv + i), "-G") ) { /*uint comparer_chaines(char *chaine_un, char *chaine_deux);*/
             if (i + 2 < argc) 
                 option_G_main(*(argv + 1 + i), *(argv + 2 + i));
             return EXIT_SUCCESS;
         }
 
         else if (recherche_substring( *(argv + i), "-E") ||
-                 recherche_substring( *(argv + i), "-DOT") ) {
-            path_create = *(argv + 1 + i);
+                 recherche_substring( *(argv + i), "-DOT") ) {  /*uint comparer_chaines(char *chaine_un, char *chaine_deux);*/
+            
             if (i + 1 < argc) {
+                path_create = *(argv + 1 + i);
                 if (recherche_substring( *(argv + i), "-E"))
                     option_E_main(path_create);
                 else
@@ -66,8 +67,8 @@ int main(int argc, char *argv[])
             return EXIT_SUCCESS;
         }
 
-        else if ( recherche_substring( *(argv + i), "-BIG") &&
-                  (i + 1 < argc) ) {
+        else if ( recherche_substring( *(argv + i), "-BIG") &&  
+                  (i + 1 < argc) ) {    /*uint comparer_chaines(char *chaine_un, char *chaine_deux);*/
             path_create = *(argv + 1 + i);
             greffe_dun_arbre(path_create);
             return EXIT_SUCCESS;
