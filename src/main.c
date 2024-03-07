@@ -1,10 +1,5 @@
 #include "../include/option.h"
 
-/* 
-    SOIT on laisse usage ici
-    SOIT on l'ajoute dans le rapport
-*/
-
 
 /*
 Soit i = {1, 2, 3}, X = {B, C, D}
@@ -48,18 +43,18 @@ int main(int argc, char *argv[])
         return EXIT_SUCCESS;
     }
     for (i = 1; i < argc; ++i) {
-        if ( recherche_substring(*(argv + i), "-G") ) { /*uint comparer_chaines(char *chaine_un, char *chaine_deux);*/
+        if ( comparer_chaines(*(argv + i), "-G") ) {
             if (i + 2 < argc) 
                 option_G_main(*(argv + 1 + i), *(argv + 2 + i));
             return EXIT_SUCCESS;
         }
 
-        else if (recherche_substring( *(argv + i), "-E") ||
-                 recherche_substring( *(argv + i), "-DOT") ) {  /*uint comparer_chaines(char *chaine_un, char *chaine_deux);*/
-            
+        else if (comparer_chaines( *(argv + i), "-E") ||
+                 comparer_chaines( *(argv + i), "-DOT") ) {
+
             if (i + 1 < argc) {
                 path_create = *(argv + 1 + i);
-                if (recherche_substring( *(argv + i), "-E"))
+                if (comparer_chaines( *(argv + i), "-E"))
                     option_E_main(path_create);
                 else
                     option_DOT_main(path_create);
@@ -67,8 +62,8 @@ int main(int argc, char *argv[])
             return EXIT_SUCCESS;
         }
 
-        else if ( recherche_substring( *(argv + i), "-BIG") &&  
-                  (i + 1 < argc) ) {    /*uint comparer_chaines(char *chaine_un, char *chaine_deux);*/
+        else if ( comparer_chaines( *(argv + i), "-BIG") &&  
+                  (i + 1 < argc) ) {
             path_create = *(argv + 1 + i);
             greffe_dun_arbre(path_create);
             return EXIT_SUCCESS;

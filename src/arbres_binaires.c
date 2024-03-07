@@ -8,17 +8,10 @@
 /********************************************************/
 
 
-/* (const char *mot) */
-uint len_string(char *mot)
-{
-    uint i = 0;
-    while (*mot++) ++i;     /* (mot[i] != '\0') */
-    return i;
-}
-
-
-/*  cette fonction recherche la premiere occurrence du caractere passe
-    similaire a strchr() de <string.h> */
+/**
+ * @brief recherche la premiere occurrence du caractere passe
+ * @return le pointeur sur ce lettre dans source (NULL sinon)
+*/
 static char *recherche_lettre(char *source, char lettre)
 {
     while (*source) {
@@ -28,14 +21,14 @@ static char *recherche_lettre(char *source, char lettre)
     return NULL;
 }
 
-
-/*  cette fonction recherche la premiere occurrence du substring passe
-    similaire a strstr() de <string.h> */
-/* on peut utiliser (static char *) */
-char *recherche_substring(char* nom_complet, char* substring)
+/**
+ * @brief recherche la premiere occurrence du substring passe, similaire a strstr() de <string.h>
+ * @return le pointeur sur la premier occurrence dans source (NULL sinon)
+ */
+static char *recherche_substring(char* nom_complet, char* substring)
 {
     char *chaine = NULL, *sous_chaine = NULL;
-    if ( !*substring ) /* substring est vide */
+    if ( !*substring )      /* substring est vide */
         return nom_complet;
 
     while ( *nom_complet ) {
@@ -56,20 +49,12 @@ char *recherche_substring(char* nom_complet, char* substring)
 }
 
 
-/*  1 si deux chaînes sont identiques
-    0 sinon */
-uint comparer_chaines(char *chaine_un, char *chaine_deux)
-{
-    while (*chaine_un && *chaine_deux) {
-        if (*chaine_un != *chaine_deux) return 0;
-        ++chaine_un;
-        ++chaine_deux;
-    }
-    return ( !(*chaine_un) && !(*chaine_deux) ) ? (1) : (0);
-}
-
-
-
+/**
+ * @brief renvoie la copie de la source (en utilisant malloc)
+ * 
+ * @param source 
+ * @return char* 
+ */
 static char *dupliquer_nom(char *source)
 {
     char *destination = NULL, *temp_dest = NULL, *temp_source = NULL;
@@ -90,6 +75,12 @@ static char *dupliquer_nom(char *source)
 }
 
 
+/**
+ * @brief cette fonction copie chaine source dans chaine dest
+ * 
+ * @param dest 
+ * @param source 
+ */
 static void copie_chaine(char* dest, char* source)
 {
     if ( !source ) { return; }
@@ -97,11 +88,38 @@ static void copie_chaine(char* dest, char* source)
 }
 
 
+/**
+ * @brief effectue la concatenantion de destination et source
+ * 
+ * @param dest 
+ * @param source 
+ */
 static void concatenantion(char* dest, char* source)
 {
     if ( !source ) { return; }
     while ( *dest ) { dest++; }
     copie_chaine(dest, source);
+}
+
+
+
+uint len_string(char *mot)
+{
+    uint i = 0;
+    while (*mot++) ++i;
+    return i;
+}
+
+
+
+uint comparer_chaines(char *chaine_un, char *chaine_deux)
+{
+    while (*chaine_un && *chaine_deux) {
+        if (*chaine_un != *chaine_deux) return 0;
+        ++chaine_un;
+        ++chaine_deux;
+    }
+    return ( !(*chaine_un) && !(*chaine_deux) ) ? (1) : (0);
 }
 
 
@@ -126,12 +144,13 @@ void path_exemples(char *buffer, char *path)
 /********************************************************/
 
 
+
 Noeud *alloue_noeud(char *chaine)
 {
-    Noeud *noeud = malloc(sizeof *noeud);
-    if ( !noeud ) return NULL;
+    Noeud *noeud = NULL;
+    if ( !(noeud = malloc(sizeof *noeud)) ) return NULL;
 
-    noeud->nom = dupliquer_nom(chaine);  /* strdup() */
+    noeud->nom = dupliquer_nom(chaine);
     if ( !(noeud->nom) ) { free(noeud); return NULL; }
 
     noeud->left = NULL;
@@ -157,6 +176,10 @@ void liberer_arbre(Arbre *arbre)
 }
 
 
+/**
+ * @brief constuire arbre d'apres le fichier .saage (la fonciton auxiliaire)
+ * @return 1 si tout va bien et 0 sinon 
+ */
 static int arbre_de_fichier_aux(FILE *fptr, Arbre *arbre)
 {
     int left = 0, right = 0;
@@ -201,6 +224,7 @@ static int arbre_de_fichier_aux(FILE *fptr, Arbre *arbre)
 }
 
 
+
 Arbre arbre_de_fichier(char *path)
 {
     Arbre arbre = NULL;
@@ -221,6 +245,7 @@ Arbre arbre_de_fichier(char *path)
 }
 
 
+
 uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
 {
     if ( !arbre_un && !arbre_deux ) return 1;
@@ -233,14 +258,11 @@ uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
 
 
 
-
-
 Arbre cree_A_1(void)
 {
     Arbre arbre = arbre_de_fichier("exemples/A_1.saage");
     return arbre;
 }
-
 
 
 Arbre cree_A_2(void)

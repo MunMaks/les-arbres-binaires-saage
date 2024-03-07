@@ -3,9 +3,6 @@
 
 #include "arbres_binaires.h"
 
-/* l'ajoute de sous-arbres gauches - left et sous-arbres droite - right 
-pour chaques feuilles / noeuds avec un fils */
-extern void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right);
 
 /**
  * @brief copie de source a *dest 

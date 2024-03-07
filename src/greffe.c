@@ -1,8 +1,12 @@
 #include "../include/greffe.h"
 
 
-
-void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
+/*
+    l'ajoute de sous-arbres gauches: left 
+          et de sous-arbres droites: right 
+    pour chaques feuilles et noeud interne (avec un enfant)
+*/
+static void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 {
     Arbre left_copie = NULL, right_copie = NULL;
 
@@ -28,7 +32,7 @@ int copie(Arbre *dest, Arbre source)
     if (!source) { *dest = NULL; return 1; }
     
     if ( !(*dest = alloue_noeud(source->nom)) ) {
-        fprintf(stderr, "Erreur d'allocation de mémoire pour la copie de l'arbre.\n");
+        fprintf(stderr, "Erreur d'allocation de memoire pour la copie de l'arbre.\n");
         return 0;
     }
 

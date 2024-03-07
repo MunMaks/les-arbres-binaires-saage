@@ -33,11 +33,4 @@ extern void option_DOT_main(char *path_create);
 extern void greffe_dun_arbre(char *path);
 
 
-/* Fonctions pour dot d'apres les cours et TPs */
-extern void ecrire_debut(FILE *fptr);
-extern void ecrire_arbre(FILE *fptr, Arbre arbre);
-extern void ecrire_fin(FILE *fptr);
-extern void dessine(FILE *fptr, Arbre arbre);
-extern void visualisation_dot(Arbre arbre);
-
 #endif

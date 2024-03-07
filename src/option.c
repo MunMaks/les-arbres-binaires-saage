@@ -7,13 +7,13 @@
 /*                                                      */
 /********************************************************/
 
-void ecrire_debut(FILE *fptr)
+static void ecrire_debut(FILE *fptr)
 {
     fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
 }
 
 
-void ecrire_arbre(FILE *fptr, Arbre arbre)
+static void ecrire_arbre(FILE *fptr, Arbre arbre)
 {   
     if (!arbre) { return; }
 
@@ -31,13 +31,13 @@ void ecrire_arbre(FILE *fptr, Arbre arbre)
 }
 
 
-void ecrire_fin(FILE *fptr)
+static void ecrire_fin(FILE *fptr)
 {
     fprintf(fptr, "}");
 }
 
 
-void dessine(FILE *fptr, Arbre arbre)
+static void dessine(FILE *fptr, Arbre arbre)
 {
     ecrire_debut(fptr);
     ecrire_arbre(fptr, arbre);
@@ -45,7 +45,7 @@ void dessine(FILE *fptr, Arbre arbre)
 }
 
 
-void visualisation_dot(Arbre arbre)
+static void visualisation_dot(Arbre arbre)
 {    
     FILE *fptr = NULL;
     int status = 0;
@@ -65,7 +65,7 @@ void visualisation_dot(Arbre arbre)
     status = system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
 
     if (status) {
-        fprintf(stderr, "Erreur lors de la génération du fichier PDF\n");
+        fprintf(stderr, "Erreur lors de la generation du fichier PDF\n");
         return;
     }
 
@@ -131,7 +131,11 @@ void option_E_main(char *path_create)
 
 
 
-
+/**
+ * @brief affichage sur la sortie standart
+ * 
+ * @param path_create est un chemin
+ */
 static void affiche_sur_stdout(char *path_create)
 {
     FILE *fptr = NULL;

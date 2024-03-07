@@ -1,14 +1,20 @@
 #include "../include/saage.h"
 
 
-void ajout_tabulation(FILE *fptr, uint count_tab)
+/**
+ * @brief l'ajout des tabulations dans fichier .saage
+*/
+static void ajout_tabulation(FILE *fptr, uint count_tab)
 {
     uint i;
     for (i = 0; i < count_tab; ++i) fprintf(fptr, "    ");
 }
 
 
-void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
+/**
+ * @brief l'ecriture de l'arbre dans un fichier .saage ouvert par serialise()
+*/
+static void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 {
     if ( !arbre ) { return; }
 
