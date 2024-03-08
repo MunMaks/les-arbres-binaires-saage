@@ -20,17 +20,17 @@ static void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 
     /* les valeurs */
     ajout_tabulation(fptr, count_tab);
-    fprintf(fptr, "Valeur : %s\n", arbre->nom);
+    fprintf(fptr, "Valeur : %s\n", arbre->val);
 
     /* les sous-arbres gauches */
     ajout_tabulation(fptr, count_tab);
-    fprintf(fptr, (arbre->left) ? ("Gauche : \n") : ("Gauche : NULL\n"));
-    ecrire_fichier_saage(fptr, arbre->left, count_tab + 1);
+    fprintf(fptr, (arbre->fg) ? ("Gauche : \n") : ("Gauche : NULL\n"));
+    ecrire_fichier_saage(fptr, arbre->fg, count_tab + 1);
 
     /* les sous-arbres droites */
     ajout_tabulation(fptr, count_tab);
-    fprintf(fptr, (arbre->right) ? ("Droite : \n") : ("Droite : NULL\n"));
-    ecrire_fichier_saage(fptr, arbre->right, count_tab + 1);
+    fprintf(fptr, (arbre->fd) ? ("Droite : \n") : ("Droite : NULL\n"));
+    ecrire_fichier_saage(fptr, arbre->fd, count_tab + 1);
 }
 
 
@@ -48,7 +48,9 @@ int serialise(char *path_create, Arbre arbre)
     }
 
     ecrire_fichier_saage(fptr_res, arbre, count_tab);
-    fclose(fptr_res);
+    if ( fclose(fptr_res) ){
+        fprintf(stderr, "la fermeture de fichier %s a echoue \n", path_create);
+    }
     return 1;
 }
 

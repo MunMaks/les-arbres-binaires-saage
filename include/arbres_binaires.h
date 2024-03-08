@@ -18,8 +18,8 @@ typedef unsigned int uint;
 
 
 typedef struct _noeud {
-    char *nom;
-    struct _noeud *left, *right;
+    char *val;
+    struct _noeud *fg, *fd;
 } Noeud, *Arbre;
 
 
@@ -81,6 +81,14 @@ extern void liberer_arbre(Arbre *arbre);
  * @return le pointeur Arbre si tout va bien et NULL sinon 
 */
 extern Arbre arbre_de_fichier(char *path);
+
+
+/**
+ * @brief le nom nous dit que c'est la lecture d'un fichier .saage
+ *          a partir de l'entree standart (stdin) 
+ * @return 1 si tout va bien et 0 sinon  
+*/
+extern int construit_arbre(Arbre *arbre);
 
 /**
  * @brief verifie si deux arbres sont identiques 

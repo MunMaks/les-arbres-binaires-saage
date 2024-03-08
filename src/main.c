@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     int i = 0;
     char *path_create = NULL;
     if (argc < 2) {
-        fprintf(stderr, "Pas assez de parametres dans main, veuillez reessayez\n");
+        fprintf(stderr, "Pas assez de parametres dans main, veuillez reessayez avec options: G, E, DOT, BIG\n");
         return EXIT_SUCCESS;
     }
     for (i = 1; i < argc; ++i) {

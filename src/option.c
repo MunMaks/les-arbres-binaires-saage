@@ -17,16 +17,16 @@ static void ecrire_arbre(FILE *fptr, Arbre arbre)
 {   
     if (!arbre) { return; }
 
-    fprintf(fptr,"\tn%p [label=\"<gauche> | <valeur> %s | <droit>\"];\n", (void *) arbre, arbre->nom);
+    fprintf(fptr,"\tn%p [label=\"<gauche> | <valeur> %s | <droit>\"];\n", (void *) arbre, arbre->val);
 
-    if (arbre->left) {
-        fprintf(fptr, "\tn%p:gauche:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->left);
-        ecrire_arbre(fptr, arbre->left);
+    if (arbre->fg) {
+        fprintf(fptr, "\tn%p:gauche:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->fg);
+        ecrire_arbre(fptr, arbre->fg);
     }
 
-    if (arbre->right) {
-        fprintf(fptr, "\tn%p:droit:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->right);
-        ecrire_arbre(fptr, arbre->right);
+    if (arbre->fd) {
+        fprintf(fptr, "\tn%p:droit:c -> n%p:valeur;\n", (void *) arbre, (void *) arbre->fd);
+        ecrire_arbre(fptr, arbre->fd);
     }
 }
 
@@ -49,9 +49,10 @@ static void visualisation_dot(Arbre arbre)
 {    
     FILE *fptr = NULL;
     int status = 0;
+    char *path = NULL;
     if (!arbre) { return; }
-
-    fptr = fopen("exemples/visualise.dot", "w");
+    path = "exemples/visualise.dot";
+    fptr = fopen(path, "w");
 
     if (!fptr) { 
         fprintf(stderr, "Erreur à l'ouverture du fichier visualise.dot\n"); 
@@ -60,7 +61,10 @@ static void visualisation_dot(Arbre arbre)
 
     dessine(fptr, arbre);
 
-    fclose(fptr);
+    if ( fclose(fptr) ){
+        fprintf(stderr, "la fermeture de fichier %s a echoue \n", path);
+    }
+
 
     status = system("dot -Tpdf exemples/visualise.dot -o exemples/visualise.pdf");
 
@@ -85,39 +89,13 @@ static void visualisation_dot(Arbre arbre)
 /*                                                      */
 /********************************************************/
 
-/**
- * @brief dans DM on l'appelle constuire_arbre()
- * le nom nous dit que c'est la lecture d'un fichier .saage
- * a partir de l'entree standart (stdin) 
- * @return 1 si tout va bien et 0 sinon  
-*/
-static uint creer_arbre_stdin(Arbre *arbre)
-{
-    char buffer[MAX_SIZE];
-    uint val = 0, len = 0;
-
-    if ((scanf("%u", &val)) <= 0) { return 0; }
-
-    if ( !val ) { *arbre = NULL; return 1; }
-
-    if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
-
-    len = len_string(buffer);   /* strlen() */
-    if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
-
-    /* ici buffer+1 car on veut passer premier espace*/
-    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
-
-    return creer_arbre_stdin(&((*arbre)->left)) && creer_arbre_stdin(&((*arbre)->right));
-}
-
 
 void option_E_main(char *path_create)
 {
     Arbre arbre_cree = NULL;
     char buff_create[CHAR_SIZE];
 
-    if ( !creer_arbre_stdin(&arbre_cree) ) {
+    if ( !construit_arbre(&arbre_cree) ) {
         fprintf(stderr, "la creation d'un arbre a partir de fichier usr est mal passe\n"); 
         if (arbre_cree) { liberer_arbre(&arbre_cree); }
         return;
@@ -149,7 +127,9 @@ static void affiche_sur_stdout(char *path_create)
 
     while (fgets(buffer, MAX_SIZE, fptr)) { fputs(buffer, stdout); }
 
-    fclose(fptr);
+    if ( fclose(fptr) ){
+        fprintf(stderr, "la fermeture de fichier %s a echoue \n", path_create);
+    }
 }
 
 

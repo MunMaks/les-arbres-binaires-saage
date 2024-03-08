@@ -150,11 +150,11 @@ Noeud *alloue_noeud(char *chaine)
     Noeud *noeud = NULL;
     if ( !(noeud = malloc(sizeof *noeud)) ) return NULL;
 
-    noeud->nom = dupliquer_nom(chaine);
-    if ( !(noeud->nom) ) { free(noeud); return NULL; }
+    noeud->val = dupliquer_nom(chaine);
+    if ( !(noeud->val) ) { free(noeud); return NULL; }
 
-    noeud->left = NULL;
-    noeud->right = NULL;
+    noeud->fg = NULL;
+    noeud->fd = NULL;
     return noeud;
 }
 
@@ -163,13 +163,13 @@ void liberer_arbre(Arbre *arbre)
 {
     if ( !*arbre ) { return; }
 
-    if ( (*arbre)->left ) { liberer_arbre(&((*arbre)->left)); }
+    if ( (*arbre)->fg ) { liberer_arbre(&((*arbre)->fg)); }
 
-    if ( (*arbre)->right ) { liberer_arbre(&((*arbre)->right)); }
+    if ( (*arbre)->fd ) { liberer_arbre(&((*arbre)->fd)); }
 
     /* suppression du noeud et son nom */
     if ( *arbre ) { 
-        if ( (*arbre)->nom ) { free((*arbre)->nom); } 
+        if ( (*arbre)->val ) { free((*arbre)->val); } 
         free(*arbre);
         *arbre = NULL;
     }
@@ -206,8 +206,8 @@ static int arbre_de_fichier_aux(FILE *fptr, Arbre *arbre)
 
     if ( recherche_substring(buffer, "Gauche :") ) {
 
-        if ( recherche_substring(buffer, "NULL") ) { (*arbre)->left = NULL; left = 1; }
-        else { left = arbre_de_fichier_aux(fptr, &((*arbre)->left)); }
+        if ( recherche_substring(buffer, "NULL") ) { (*arbre)->fg = NULL; left = 1; }
+        else { left = arbre_de_fichier_aux(fptr, &((*arbre)->fg)); }
     }
 
 
@@ -216,8 +216,8 @@ static int arbre_de_fichier_aux(FILE *fptr, Arbre *arbre)
 
     if ( recherche_substring(buffer, "Droite :") ) {
 
-        if ( recherche_substring(buffer, "NULL") ) { (*arbre)->right = NULL; right = 1; }
-        else { right = arbre_de_fichier_aux(fptr, &((*arbre)->right)); }
+        if ( recherche_substring(buffer, "NULL") ) { (*arbre)->fd = NULL; right = 1; }
+        else { right = arbre_de_fichier_aux(fptr, &((*arbre)->fd)); }
     }
 
     return left && right;
@@ -240,10 +240,33 @@ Arbre arbre_de_fichier(char *path)
             arbre = NULL;
         }
     }
-    fclose(fptr);
+    if ( fclose(fptr) ){
+        fprintf(stderr, "la fermeture de fichier %s a echoue \n", path);
+    }
     return arbre;
 }
 
+
+
+int construit_arbre(Arbre *arbre)
+{
+    char buffer[MAX_SIZE];
+    uint val = 0, len = 0;
+
+    if ((scanf("%u", &val)) <= 0) { return 0; }
+
+    if ( !val ) { *arbre = NULL; return 1; }
+
+    if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
+
+    len = len_string(buffer);   /* strlen() */
+    if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
+
+    /* ici buffer+1 car on veut passer premier espace*/
+    if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
+
+    return construit_arbre(&((*arbre)->fg)) && construit_arbre(&((*arbre)->fd));
+}
 
 
 uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
@@ -251,11 +274,10 @@ uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
     if ( !arbre_un && !arbre_deux ) return 1;
     else if ( !arbre_un  || !arbre_deux ) return 0;
 
-    return comparer_chaines(arbre_un->nom, arbre_deux->nom) && 
-            (est_meme_arbre(arbre_un->left, arbre_deux->left) && 
-             est_meme_arbre(arbre_un->right, arbre_deux->right));
+    return comparer_chaines(arbre_un->val, arbre_deux->val) && 
+            (est_meme_arbre(arbre_un->fg, arbre_deux->fg) && 
+             est_meme_arbre(arbre_un->fd, arbre_deux->fd));
 }
-
 
 
 Arbre cree_A_1(void)
@@ -275,6 +297,5 @@ Arbre cree_A_2(void)
 Arbre cree_A_3(void)
 {
     Arbre arbre = arbre_de_fichier("exemples/A_3.saage");;
-
     return arbre;
 }
