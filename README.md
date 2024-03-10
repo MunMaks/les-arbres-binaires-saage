@@ -1,4 +1,4 @@
-# Trees saagerithm Homework
+# Trees algorithm Homework
 
 The program "./saage" is a program that allows you to work with trees and their grafts. It offers various functionalities to manipulate these data structures, including the addition and removal of grafts, reading and writing files, and displaying trees and grafts as graphs using .dot.
 
