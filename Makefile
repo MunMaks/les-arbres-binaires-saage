@@ -31,7 +31,7 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 
-ARCHIVE = MUNAIT_NAVAR
+ARCHIVE = MUNAITPASOV_NAVARRO
 dist: clean
 	mkdir -p $(ARCHIVE)
 	cp -R Makefile README.md $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
