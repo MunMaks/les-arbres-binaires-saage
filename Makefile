@@ -7,7 +7,7 @@ SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = build
 EXEMPLES = exemples
-EXE = algo
+EXE = saage
 
 
 SRC = $(wildcard $(SRC_DIR)/*.c)
