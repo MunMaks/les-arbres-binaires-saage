@@ -1,6 +1,6 @@
-# Trees Algorithm Homework
+# Trees saagerithm Homework
 
-The program "./algo" is a program that allows you to work with trees and their grafts. It offers various functionalities to manipulate these data structures, including the addition and removal of grafts, reading and writing files, and displaying trees and grafts as graphs using .dot.
+The program "./saage" is a program that allows you to work with trees and their grafts. It offers various functionalities to manipulate these data structures, including the addition and removal of grafts, reading and writing files, and displaying trees and grafts as graphs using .dot.
 
 ## Compilation
 
@@ -22,11 +22,11 @@ The program can be used with different options to perform specific operations on
 
 ```
 i = {1, 2, 3}, X = {B, C, D}
-./algo -G A_i.saage X.saage
-./algo -E new_file.saage < user_input.txt
-./algo -E new_file.saage (input in format *)
-./algo -DOT file.saage
-./algo -BIG grand.saage
+./saage -G A_i.saage X.saage
+./saage -E new_file.saage < user_input.txt
+./saage -E new_file.saage (input in format *)
+./saage -DOT file.saage
+./saage -BIG grand.saage
 ```
 Input in format *
 ```
