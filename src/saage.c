@@ -4,7 +4,7 @@
 /**
  * @brief l'ajout des tabulations dans fichier .saage
 */
-static void ajout_tabulation(FILE *fptr, uint count_tab)
+static __inline__ void ajout_tabulation(FILE *fptr, uint count_tab)
 {
     uint i;
     for (i = 0; i < count_tab; ++i) fprintf(fptr, "    ");
@@ -14,7 +14,7 @@ static void ajout_tabulation(FILE *fptr, uint count_tab)
 /**
  * @brief l'ecriture de l'arbre dans un fichier .saage ouvert par serialise()
 */
-static void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
+static __inline__ void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 {
     if ( !arbre ) { return; }
 
@@ -34,7 +34,7 @@ static void ecrire_fichier_saage(FILE *fptr, Arbre arbre, uint count_tab)
 }
 
 
-/* la fonction creer_fichier_saage() est plus parlante */
+
 int serialise(char *path_create, Arbre arbre)
 {
     FILE *fptr_res = NULL;

@@ -6,7 +6,7 @@
           et de sous-arbres droites: right 
     pour chaques feuilles et noeud interne (avec un enfant)
 */
-static void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
+static __inline__ void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
 {
     Arbre left_copie = NULL, right_copie = NULL;
 

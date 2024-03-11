@@ -7,13 +7,13 @@
 /*                                                      */
 /********************************************************/
 
-static void ecrire_debut(FILE *fptr)
+static __inline__ void ecrire_debut(FILE *fptr)
 {
     fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
 }
 
 
-static void ecrire_arbre(FILE *fptr, Arbre arbre)
+static __inline__ void ecrire_arbre(FILE *fptr, Arbre arbre)
 {   
     if (!arbre) { return; }
 
@@ -31,13 +31,13 @@ static void ecrire_arbre(FILE *fptr, Arbre arbre)
 }
 
 
-static void ecrire_fin(FILE *fptr)
+static __inline__ void ecrire_fin(FILE *fptr)
 {
     fprintf(fptr, "}");
 }
 
 
-static void dessine(FILE *fptr, Arbre arbre)
+static __inline__ void dessine(FILE *fptr, Arbre arbre)
 {
     ecrire_debut(fptr);
     ecrire_arbre(fptr, arbre);
@@ -45,7 +45,7 @@ static void dessine(FILE *fptr, Arbre arbre)
 }
 
 
-static void visualisation_dot(Arbre arbre)
+static __inline__ void visualisation_dot(Arbre arbre)
 {    
     FILE *fptr = NULL;
     int status = 0;
@@ -114,7 +114,7 @@ void option_E_main(char *path_create)
  * 
  * @param path_create est un chemin
  */
-static void affiche_sur_stdout(char *path_create)
+static __inline__ void affiche_sur_stdout(char *path_create)
 {
     FILE *fptr = NULL;
     char buffer[MAX_SIZE];
