@@ -159,13 +159,13 @@ Noeud *alloue_noeud(char *chaine)
 }
 
 
-void liberer_arbre(Arbre *arbre)
+void liberer(Arbre *arbre)
 {
     if ( !*arbre ) { return; }
 
-    if ( (*arbre)->fg ) { liberer_arbre(&((*arbre)->fg)); }
+    if ( (*arbre)->fg ) { liberer(&((*arbre)->fg)); }
 
-    if ( (*arbre)->fd ) { liberer_arbre(&((*arbre)->fd)); }
+    if ( (*arbre)->fd ) { liberer(&((*arbre)->fd)); }
 
     /* suppression du noeud et son nom */
     if ( *arbre ) { 
@@ -236,7 +236,7 @@ Arbre arbre_de_fichier(char *path)
     if ( !arbre_de_fichier_aux(fptr, &arbre) ) {
         fprintf(stderr, "Construction a mal passe, veuillez reessayer\n");
         if (arbre) {
-            liberer_arbre(&arbre);
+            liberer(&arbre);
             arbre = NULL;
         }
     }

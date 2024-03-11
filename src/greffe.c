@@ -66,7 +66,7 @@ int expansion(Arbre *dest, Arbre source)
         /* l'ajout des sous arbres de la racine a la copie de source */
         ajoute_sous_arbres(&source_copie, (*dest)->fg, (*dest)->fd);
 
-        liberer_arbre(dest);    /* liberer toute la memoire de *dest car on va la remplacer */
+        liberer(dest);    /* liberer toute la memoire de *dest car on va la remplacer */
 
         *dest = source_copie;
         return 1;

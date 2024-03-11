@@ -97,14 +97,14 @@ void option_E_main(char *path_create)
 
     if ( !construit_arbre(&arbre_cree) ) {
         fprintf(stderr, "la creation d'un arbre a partir de fichier usr est mal passe\n"); 
-        if (arbre_cree) { liberer_arbre(&arbre_cree); }
+        if (arbre_cree) { liberer(&arbre_cree); }
         return;
     }
     path_exemples(buff_create, path_create);
 
     if ( !serialise(buff_create, arbre_cree) ){ remove(buff_create); }
 
-    if (arbre_cree) { liberer_arbre(&arbre_cree); }
+    if (arbre_cree) { liberer(&arbre_cree); }
 }
 
 
@@ -146,15 +146,15 @@ void option_G_main(char *path_dest, char *path_greffe)
     if ( !arbre_init ) { return; }
 
     greffe = arbre_de_fichier(buff_greffe);
-    if ( !greffe ) { liberer_arbre(&arbre_init); return; }
+    if ( !greffe ) { liberer(&arbre_init); return; }
 
     if ( !expansion(&arbre_init, greffe) ) {
-        if (arbre_init) { liberer_arbre(&arbre_init); }
-        if (greffe) { liberer_arbre(&greffe); }
+        if (arbre_init) { liberer(&arbre_init); }
+        if (greffe) { liberer(&greffe); }
         return;
     }
 
-    if (greffe) { liberer_arbre(&greffe); }
+    if (greffe) { liberer(&greffe); }
 
     path_create = "exemples/fichier_option_G.saage"; 
 
@@ -163,7 +163,7 @@ void option_G_main(char *path_dest, char *path_greffe)
     }
 
     remove(path_create);
-    if (arbre_init) { liberer_arbre(&arbre_init); }
+    if (arbre_init) { liberer(&arbre_init); }
 }
 
 
@@ -180,7 +180,7 @@ void option_DOT_main(char *path_create)
     /* si le buffer contient un chemin invalid, alors rien se passe...*/
     if (arbre) {
         visualisation_dot(arbre);
-        liberer_arbre(&arbre);
+        liberer(&arbre);
     }
 }
 
@@ -209,6 +209,6 @@ void greffe_dun_arbre(char *path)
 
     visualisation_dot(arbre_init);
 
-    if (greffe) { liberer_arbre(&greffe); }
-    if (arbre_init) { liberer_arbre(&arbre_init); }
+    if (greffe) { liberer(&greffe); }
+    if (arbre_init) { liberer(&arbre_init); }
 }
