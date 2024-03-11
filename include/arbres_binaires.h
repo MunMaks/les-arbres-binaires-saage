@@ -8,8 +8,6 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <assert.h>
-#include <stdarg.h>
 
 
 #define MAX_SIZE 4096
