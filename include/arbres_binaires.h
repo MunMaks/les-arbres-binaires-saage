@@ -71,7 +71,7 @@ extern Noeud *alloue_noeud(char *chaine);
  * 
  * @param arbre 
  */
-extern void liberer_arbre(Arbre *arbre);
+extern void liberer(Arbre *arbre);
 
 
 /**
