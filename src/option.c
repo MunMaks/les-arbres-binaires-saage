@@ -7,13 +7,14 @@
 /*                                                      */
 /********************************************************/
 
-static __inline__ void ecrire_debut(FILE *fptr)
+
+static __inline__ void ecrire_debut(FILE * __restrict__ fptr)
 {
     fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
 }
 
 
-static __inline__ void ecrire_arbre(FILE *fptr, Arbre arbre)
+static __inline__ void ecrire_arbre(FILE * __restrict__ fptr, Arbre arbre)
 {   
     if (!arbre) { return; }
 
@@ -31,13 +32,13 @@ static __inline__ void ecrire_arbre(FILE *fptr, Arbre arbre)
 }
 
 
-static __inline__ void ecrire_fin(FILE *fptr)
+static __inline__ void ecrire_fin(FILE * __restrict__ fptr)
 {
     fprintf(fptr, "}");
 }
 
 
-static __inline__ void dessine(FILE *fptr, Arbre arbre)
+static __inline__ void dessine(FILE * __restrict__ fptr, Arbre arbre)
 {
     ecrire_debut(fptr);
     ecrire_arbre(fptr, arbre);
@@ -90,7 +91,7 @@ static __inline__ void visualisation_dot(Arbre arbre)
 /********************************************************/
 
 
-void option_E_main(char *path_create)
+void option_E_main(char * __restrict__ path_create)
 {
     Arbre arbre_cree = NULL;
     char buff_create[CHAR_SIZE];
@@ -114,7 +115,7 @@ void option_E_main(char *path_create)
  * 
  * @param path_create est un chemin
  */
-static __inline__ void affiche_sur_stdout(char *path_create)
+static __inline__ void affiche_sur_stdout(char * __restrict__ path_create)
 {
     FILE *fptr = NULL;
     char buffer[MAX_SIZE];
@@ -133,7 +134,7 @@ static __inline__ void affiche_sur_stdout(char *path_create)
 }
 
 
-void option_G_main(char *path_dest, char *path_greffe)
+void option_G_main(char * __restrict__ path_dest, char * __restrict__ path_greffe)
 {
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_create = NULL;
@@ -168,7 +169,7 @@ void option_G_main(char *path_dest, char *path_greffe)
 
 
 
-void option_DOT_main(char *path_create)
+void option_DOT_main(char * __restrict__ path_create)
 {
     Arbre arbre = NULL;
     char buffer[MAX_SIZE];
@@ -186,7 +187,7 @@ void option_DOT_main(char *path_create)
 
 
 
-void greffe_dun_arbre(char *path)
+void greffe_dun_arbre(char * __restrict__ path)
 {
     Arbre arbre_init = NULL, greffe = NULL;
     char *path_greffe = NULL, *path_create = NULL;

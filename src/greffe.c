@@ -1,12 +1,11 @@
 #include "../include/greffe.h"
 
-
 /*
     l'ajoute de sous-arbres gauches: left 
           et de sous-arbres droites: right 
     pour chaques feuilles et noeud interne (avec un enfant)
 */
-static __inline__ void ajoute_sous_arbres(Arbre *arbre, Noeud *left, Noeud *right)
+static __inline__ void ajoute_sous_arbres(Arbre * __restrict__ arbre, Noeud * __restrict__ left, Noeud * __restrict__ right)
 {
     Arbre left_copie = NULL, right_copie = NULL;
 

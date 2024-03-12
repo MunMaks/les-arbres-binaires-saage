@@ -10,7 +10,7 @@
 #include <errno.h>
 
 
-#define MAX_SIZE 4096
+#define MAX_SIZE 2048
 #define CHAR_SIZE 256
 typedef unsigned int uint; 
 
@@ -31,14 +31,14 @@ typedef struct _noeud {
  * @brief renvoie la longueur d'une chaine de caractere
  *        similaire a strlen() de <string.h>
  */
-extern uint len_string(char *mot);
+extern uint len_string(char * __restrict__ mot);
 
 
 /**
  * @return 1 si deux chaines sont identiques
  *         0 sinon
 */
-extern uint comparer_chaines(char *chaine_un, char *chaine_deux);
+extern uint comparer_chaines(char * __restrict__ chaine_un, char * __restrict__ chaine_deux);
 
 
 /**
@@ -46,7 +46,7 @@ extern uint comparer_chaines(char *chaine_un, char *chaine_deux);
  * et ajoute "exemples/" au debut de buffer
  * si cela n'existe pas deja la bas
 */
-extern void path_exemples(char *buffer, char *path);
+extern void path_exemples(char * __restrict__ buffer, char * __restrict__ path);
 
 
 
@@ -78,7 +78,7 @@ extern void liberer(Arbre *arbre);
  * @brief renvoie l'arbre deja construit d'apres le chemin pour fichier .saage 
  * @return le pointeur Arbre si tout va bien et NULL sinon 
 */
-extern Arbre arbre_de_fichier(char *path);
+extern Arbre arbre_de_fichier(char * __restrict__ path);
 
 
 /**
@@ -97,7 +97,9 @@ extern uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux);
 
 /* Des exemples pour construire A_i.saage  */
 extern Arbre cree_A_1(void);
+
 extern Arbre cree_A_2(void);
+
 extern Arbre cree_A_3(void);
 
 
