@@ -1,6 +1,5 @@
 #include "../include/greffe.h"
 
-
 /*
     l'ajoute de sous-arbres gauches: left 
           et de sous-arbres droites: right 

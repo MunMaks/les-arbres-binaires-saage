@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -std=c17 -pedantic -Wall -Wfatal-errors -Werror -Wextra -finline-functions -funroll-loops -ansi
 CLIBS = 
 OPT = -O3
+ARCHIVE = MUNAITPASOV_NAVARRO
 
 SRC_DIR = src
 INC_DIR = include
@@ -31,13 +32,12 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
 
-ARCHIVE = MUNAITPASOV_NAVARRO
+
 dist: clean
 	mkdir -p $(ARCHIVE)
-	cp -R Makefile README.md graph.png $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
+	cp -R makefile rapport_MUNAITPASOV_NAVARRO.pdf graph.png $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
 	zip -r $(ARCHIVE).zip $(ARCHIVE)
 	rm -rf $(ARCHIVE)
-
 
 .PHONY: all clean mrproper uninstall
 

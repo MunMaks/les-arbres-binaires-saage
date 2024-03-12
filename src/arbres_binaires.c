@@ -259,10 +259,10 @@ int construit_arbre(Arbre *arbre)
 
     if ( !fgets(buffer, MAX_SIZE, stdin) ) { return 0; }
 
-    len = len_string(buffer);   /* strlen() */
+    len = len_string(buffer);
     if (len > 0 && buffer[len - 1] == '\n') { buffer[len - 1] = '\0'; }
 
-    /* ici buffer+1 car on veut passer premier espace*/
+    /* ici buffer + 1 car on veut passer premier espace*/
     if ( !(*arbre = alloue_noeud(buffer + 1)) ) { return 0; }   /* allouer la memoire pour l'arbre */
 
     return construit_arbre(&((*arbre)->fg)) && construit_arbre(&((*arbre)->fd));
@@ -296,6 +296,6 @@ Arbre cree_A_2(void)
 
 Arbre cree_A_3(void)
 {
-    Arbre arbre = arbre_de_fichier("exemples/A_3.saage");;
+    Arbre arbre = arbre_de_fichier("exemples/A_3.saage");
     return arbre;
 }

@@ -7,6 +7,7 @@
 /*                                                      */
 /********************************************************/
 
+
 static __inline__ void ecrire_debut(FILE * __restrict__ fptr)
 {
     fprintf(fptr, "digraph arbre{\n\tnode [ shape = record, height = .1]\n\tedge [ tailclip = false , arrowtail = dot, dir = both];\n\n");
