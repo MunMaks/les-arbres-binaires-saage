@@ -12,7 +12,7 @@
  * @brief recherche la premiere occurrence du caractere passe
  * @return le pointeur sur ce lettre dans source (NULL sinon)
 */
-static __inline__ char *recherche_lettre(char *source, char lettre)
+static __inline__ char *recherche_lettre(char * __restrict__ source, char lettre)
 {
     while (*source) {
         if (*source == lettre) { return source; }
@@ -25,7 +25,7 @@ static __inline__ char *recherche_lettre(char *source, char lettre)
  * @brief recherche la premiere occurrence du substring passe, similaire a strstr() de <string.h>
  * @return le pointeur sur la premier occurrence dans source (NULL sinon)
  */
-static __inline__ char *recherche_substring(char *nom_complet, char *substring)
+static __inline__ char *recherche_substring(char * __restrict__ nom_complet, char * __restrict__ substring)
 {
     char *chaine = NULL, *sous_chaine = NULL;
     if ( !*substring )      /* substring est vide */
@@ -55,7 +55,7 @@ static __inline__ char *recherche_substring(char *nom_complet, char *substring)
  * @param source 
  * @return char* 
  */
-static __inline__ char *dupliquer_nom(char * source)
+static __inline__ char *dupliquer_nom(char * __restrict__ source)
 {
     char *destination = NULL, *temp_dest = NULL, *temp_source = NULL;
 
@@ -81,7 +81,7 @@ static __inline__ char *dupliquer_nom(char * source)
  * @param dest 
  * @param source 
  */
-static __inline__ void copie_chaine(char *dest, char *source)
+static __inline__ void copie_chaine(char * __restrict__ dest, char * __restrict__ source)
 {
     if ( !source ) { return; }
     while ( (*dest++ = *source++) ) { ; /* boucle vide */ } 
@@ -94,7 +94,7 @@ static __inline__ void copie_chaine(char *dest, char *source)
  * @param dest 
  * @param source 
  */
-static __inline__ void concatenantion(char *dest, char *source)
+static __inline__ void concatenantion(char * __restrict__ dest, char * __restrict__ source)
 {
     if ( !source ) { return; }
     while ( *dest ) { dest++; }
@@ -180,7 +180,7 @@ void liberer(Arbre *arbre)
  * @brief constuire arbre d'apres le fichier .saage (la fonciton auxiliaire)
  * @return 1 si tout va bien et 0 sinon 
  */
-static __inline__ int arbre_de_fichier_aux(FILE *fptr, Arbre *arbre)
+static __inline__ int arbre_de_fichier_aux(FILE * __restrict__ fptr, Arbre * __restrict__ arbre)
 {
     int left = 0, right = 0;
     char buffer[MAX_SIZE];
