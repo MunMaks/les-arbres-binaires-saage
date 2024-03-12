@@ -103,7 +103,7 @@ static __inline__ void concatenantion(char * __restrict__ dest, char * __restric
 
 
 
-uint len_string(char *mot)
+uint len_string(char * __restrict__ mot)
 {
     uint i = 0;
     while (*mot++) ++i;
@@ -112,7 +112,7 @@ uint len_string(char *mot)
 
 
 
-uint comparer_chaines(char *chaine_un, char *chaine_deux)
+uint comparer_chaines(char * __restrict__ chaine_un, char * __restrict__ chaine_deux)
 {
     while (*chaine_un && *chaine_deux) {
         if (*chaine_un != *chaine_deux) return 0;
@@ -123,7 +123,7 @@ uint comparer_chaines(char *chaine_un, char *chaine_deux)
 }
 
 
-void path_exemples(char *buffer, char *path)
+void path_exemples(char * __restrict__ buffer, char * __restrict__ path)
 {
     if ( !path ) return;
 
@@ -225,7 +225,7 @@ static __inline__ int arbre_de_fichier_aux(FILE * __restrict__ fptr, Arbre * __r
 
 
 
-Arbre arbre_de_fichier(char *path)
+Arbre arbre_de_fichier(char * __restrict__ path)
 {
     Arbre arbre = NULL;
     FILE *fptr = fopen(path, "r");
