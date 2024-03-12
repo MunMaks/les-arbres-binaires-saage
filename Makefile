@@ -34,7 +34,7 @@ $(OBJ_DIR):
 ARCHIVE = MUNAITPASOV_NAVARRO
 dist: clean
 	mkdir -p $(ARCHIVE)
-	cp -R Makefile README.md $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
+	cp -R Makefile README.md graph.png $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
 	zip -r $(ARCHIVE).zip $(ARCHIVE)
 	rm -rf $(ARCHIVE)
 
