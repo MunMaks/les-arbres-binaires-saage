@@ -14,7 +14,7 @@ static __inline__ void ecrire_debut(FILE * __restrict__ fptr)
 }
 
 
-static __inline__ void ecrire_arbre(FILE * __restrict__ fptr, Arbre arbre)
+static __inline__ void ecrire_arbre(FILE * __restrict__ fptr, Arbre __restrict__ arbre)
 {   
     if (!arbre) { return; }
 
@@ -38,7 +38,7 @@ static __inline__ void ecrire_fin(FILE * __restrict__ fptr)
 }
 
 
-static __inline__ void dessine(FILE * __restrict__ fptr, Arbre arbre)
+static __inline__ void dessine(FILE * __restrict__ fptr, Arbre __restrict__ arbre)
 {
     ecrire_debut(fptr);
     ecrire_arbre(fptr, arbre);
@@ -46,11 +46,11 @@ static __inline__ void dessine(FILE * __restrict__ fptr, Arbre arbre)
 }
 
 
-static __inline__ void visualisation_dot(Arbre arbre)
+static __inline__ void visualisation_dot(Arbre __restrict__ arbre)
 {    
     FILE *fptr = NULL;
-    int status = 0;
     char *path = NULL;
+    int status = 0;
     if (!arbre) { return; }
     path = "exemples/visualise.dot";
     fptr = fopen(path, "w");

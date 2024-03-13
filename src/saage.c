@@ -14,7 +14,7 @@ static __inline__ void ajout_tabulation(FILE * __restrict__ fptr, uint count_tab
 /**
  * @brief l'ecriture de l'arbre dans un fichier .saage ouvert par serialise()
 */
-static __inline__ void ecrire_fichier_saage(FILE * __restrict__ fptr, Arbre arbre, uint count_tab)
+static __inline__ void ecrire_fichier_saage(FILE * __restrict__ fptr, Arbre __restrict__ arbre, uint count_tab)
 {
     if ( !arbre ) { return; }
 
@@ -35,7 +35,7 @@ static __inline__ void ecrire_fichier_saage(FILE * __restrict__ fptr, Arbre arbr
 
 
 
-int serialise(char *path_create, Arbre arbre)
+int serialise(char *path_create, Arbre __restrict__ arbre)
 {
     FILE *fptr_res = NULL;
     uint count_tab = 0;
@@ -55,7 +55,7 @@ int serialise(char *path_create, Arbre arbre)
 }
 
 
-int deserialise(char *path, Arbre *arbre)
+int deserialise(char * __restrict__ path, Arbre * __restrict__ arbre)
 {
     if (!path) { return 0; }
 

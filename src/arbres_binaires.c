@@ -145,7 +145,7 @@ void path_exemples(char * __restrict__ buffer, char * __restrict__ path)
 
 
 
-Noeud *alloue_noeud(char *chaine)
+Noeud *alloue_noeud(char * __restrict__ chaine)
 {
     Noeud *noeud = NULL;
     if ( !(noeud = malloc(sizeof *noeud)) ) return NULL;
@@ -159,7 +159,7 @@ Noeud *alloue_noeud(char *chaine)
 }
 
 
-void liberer(Arbre *arbre)
+void liberer(Arbre * __restrict__ arbre)
 {
     if ( !*arbre ) { return; }
 
@@ -248,7 +248,7 @@ Arbre arbre_de_fichier(char * __restrict__ path)
 
 
 
-int construit_arbre(Arbre *arbre)
+int construit_arbre(Arbre * __restrict__ arbre)
 {
     char buffer[MAX_SIZE];
     uint val = 0, len = 0;
@@ -269,7 +269,7 @@ int construit_arbre(Arbre *arbre)
 }
 
 
-uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux)
+uint est_meme_arbre(Arbre __restrict__ arbre_un, Arbre __restrict__ arbre_deux)
 {
     if ( !arbre_un && !arbre_deux ) return 1;
     else if ( !arbre_un  || !arbre_deux ) return 0;

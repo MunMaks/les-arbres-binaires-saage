@@ -29,13 +29,12 @@ typedef struct _noeud {
 
 /**
  * @brief renvoie la longueur d'une chaine de caractere
- *        similaire a strlen() de <string.h>
  */
 extern uint len_string(char * __restrict__ mot);
 
 
 /**
- * @return 1 si deux chaines sont identiques
+ * @brief 1 si deux chaines sont identiques
  *         0 sinon
 */
 extern uint comparer_chaines(char * __restrict__ chaine_un, char * __restrict__ chaine_deux);
@@ -59,19 +58,15 @@ extern void path_exemples(char * __restrict__ buffer, char * __restrict__ path);
 
 /**
  * @brief allocation de la memoire pour un noeud
- * 
- * @param chaine 
- * @return Noeud* 
+ * @return le pointeur Noeud *
  */
-extern Noeud *alloue_noeud(char *chaine);
+extern Noeud *alloue_noeud(char * __restrict__ chaine);
 
 
 /**
  * @brief liberation de la memoire allouee par l'arbre
- * 
- * @param arbre 
  */
-extern void liberer(Arbre *arbre);
+extern void liberer(Arbre * __restrict__ arbre);
 
 
 /**
@@ -86,13 +81,13 @@ extern Arbre arbre_de_fichier(char * __restrict__ path);
  *          a partir de l'entree standart (stdin) 
  * @return 1 si tout va bien et 0 sinon  
 */
-extern int construit_arbre(Arbre *arbre);
+extern int construit_arbre(Arbre * __restrict__ arbre);
 
 /**
  * @brief verifie si deux arbres sont identiques 
  * @return 1 si tout va bien et 0 sinon  
 */
-extern uint est_meme_arbre(Arbre arbre_un, Arbre arbre_deux);
+extern uint est_meme_arbre(Arbre __restrict__ arbre_un, Arbre __restrict__ arbre_deux);
 
 
 /* Des exemples pour construire A_i.saage  */

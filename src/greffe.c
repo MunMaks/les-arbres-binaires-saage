@@ -26,7 +26,7 @@ static __inline__ void ajoute_sous_arbres(Arbre * __restrict__ arbre, Noeud * __
 }
 
 
-int copie(Arbre *dest, Arbre source)
+int copie(Arbre * __restrict__ dest, Arbre __restrict__ source)
 {
     if (!source) { *dest = NULL; return 1; }
     
@@ -43,7 +43,7 @@ int copie(Arbre *dest, Arbre source)
 }
 
 
-int expansion(Arbre *dest, Arbre source)
+int expansion(Arbre * __restrict__ dest, Arbre __restrict__ source)
 {
     int left = 0, right = 0;
     Arbre source_copie = NULL;
