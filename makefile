@@ -21,7 +21,7 @@ INC = -I $(INC_DIR)
 all: $(EXE)
 
 $(EXE): $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(OPT) $(CFLAGS_OPTIONAL)
+	$(CC) -o $@ $^ $(CFLAGS) $(OPT) $(CFLAGS_OPTIONALS)
 
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
