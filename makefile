@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c17 -ansi -pedantic -Wall -Wfatal-errors -Werror -Wextra -finline-functions -funroll-loops
-CFLAGS_OPTIONAL = -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 -Waggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code
+CFLAGS_OPTIONALS = -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 -Waggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code
 OPT = -O3
 ARCHIVE = MUNAITPASOV_NAVARRO
 
