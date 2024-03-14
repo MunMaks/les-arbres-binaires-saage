@@ -33,7 +33,7 @@ $(OBJ_DIR):
 
 
 
-dist: clean
+dist: mrproper
 	mkdir -p $(ARCHIVE)
 	cp -R makefile rapport_MUNAITPASOV_NAVARRO.pdf graph.png $(SRC_DIR) $(INC_DIR) $(EXEMPLES) $(ARCHIVE)
 	zip -r $(ARCHIVE).zip $(ARCHIVE)
