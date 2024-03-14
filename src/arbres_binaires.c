@@ -269,17 +269,6 @@ int construit_arbre(Arbre * __restrict__ arbre)
 }
 
 
-uint est_meme_arbre(Arbre __restrict__ arbre_un, Arbre __restrict__ arbre_deux)
-{
-    if ( !arbre_un && !arbre_deux ) return 1;
-    else if ( !arbre_un  || !arbre_deux ) return 0;
-
-    return comparer_chaines(arbre_un->val, arbre_deux->val) && 
-            (est_meme_arbre(arbre_un->fg, arbre_deux->fg) && 
-             est_meme_arbre(arbre_un->fd, arbre_deux->fd));
-}
-
-
 Arbre cree_A_1(void)
 {
     Arbre arbre = arbre_de_fichier("exemples/A_1.saage");

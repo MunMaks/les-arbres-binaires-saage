@@ -83,14 +83,8 @@ extern Arbre arbre_de_fichier(char * __restrict__ path);
 */
 extern int construit_arbre(Arbre * __restrict__ arbre);
 
-/**
- * @brief verifie si deux arbres sont identiques 
- * @return 1 si tout va bien et 0 sinon  
-*/
-extern uint est_meme_arbre(Arbre __restrict__ arbre_un, Arbre __restrict__ arbre_deux);
 
-
-/* Des exemples pour construire A_i.saage  */
+/* Des exemples pour construire A_1, A_2, A_3  */
 extern Arbre cree_A_1(void);
 
 extern Arbre cree_A_2(void);
