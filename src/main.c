@@ -1,8 +1,10 @@
 #include "../include/option.h"
 
 /*
-clang -std=c17 -pedantic exemples/tests_prof.o build/option.o build/arbres_binaires.o build/saage.o build/greffe.o -o tests_prof
-valgrind ./tests_prof
+Lancement des tests automatiques
+$ make
+$ clang -std=c17 -pedantic exemples/tests_prof.o build/option.o build/arbres_binaires.o build/saage.o build/greffe.o -o tests_prof
+$ valgrind ./tests_prof
 */
 
 int main(int argc, char *argv[])
