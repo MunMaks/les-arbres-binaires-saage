@@ -168,11 +168,10 @@ void liberer(Arbre * __restrict__ arbre)
     if ( (*arbre)->fd ) { liberer(&((*arbre)->fd)); }
 
     /* suppression du noeud et son nom */
-    if ( *arbre ) { 
-        if ( (*arbre)->val ) { free((*arbre)->val); } 
-        free(*arbre);
-        *arbre = NULL;
-    }
+    if ( (*arbre)->val ) 
+        free((*arbre)->val);
+    free(*arbre);
+    *arbre = NULL;
 }
 
 
