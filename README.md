@@ -52,6 +52,6 @@ But "0" means child left or right is NULL so we switch to subTreeRight and doing
 
 ## Authors
 
-- Navarro Antony
-- MUNAITPASOV Maksat
+- Navarro A.
+- MUNAITPASOV M.
 
